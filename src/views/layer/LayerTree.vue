@@ -1,11 +1,11 @@
 <template>
   <t-space direction="vertical">
     <t-tree
-      :data="data.itemsString"
-      hover
-      expand-all
-      :checkable="checkable"
       :check-strictly="checkStrictly"
+      :checkable="checkable"
+      :data="data.itemsString"
+      expand-all
+      hover
       value-mode="onlyLeaf"
       @change="onChange"
       @click="onClick"
@@ -14,17 +14,11 @@
 </template>
 
 <script setup>
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref } from 'vue'
 import { ProdLayersTypeEnum } from '@/views/map/ConstValue'
-import { MessagePlugin } from 'tdesign-vue-next'
 import { difference } from '@/utils/Utils'
 import { findNodeByValue } from '@/utils/NodeUtil'
-import eventBus, {
-  closeDiTuLayer,
-  closeVectorLayer,
-  openDiTuLayer,
-  openVectorLayer
-} from '@/utils/eventBus'
+import { closeDiTuLayer, closeVectorLayer, openDiTuLayer, openVectorLayer } from '@/utils/eventBus'
 
 const data = reactive({
   itemsString: [

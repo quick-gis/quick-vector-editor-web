@@ -6,7 +6,7 @@
           <span>文件</span>
         </template>
         <t-submenu title="成图" value="1-0">
-          <t-menu-item value="1-1-1"> 导入 CSV</t-menu-item>
+          <t-menu-item value="1-1-1" @click="openTianDiTuConfig('/gen_csv')"> 导入 CSV</t-menu-item>
           <t-menu-item value="1-1-2"> 导入 Excel</t-menu-item>
           <t-menu-item value="1-1-3"> 导入 GeoJson</t-menu-item>
           <t-menu-item value="1-1-3"> 导入 MySQL</t-menu-item>
@@ -19,7 +19,9 @@
         <template #title>
           <span>配置</span>
         </template>
-        <t-menu-item value="2-0" @click="openTianDiTuConfig">天地图token</t-menu-item>
+        <t-menu-item value="2-0" @click="openTianDiTuConfig('/tdt_config')"
+          >天地图token</t-menu-item
+        >
       </t-submenu>
     </t-head-menu>
   </div>
@@ -56,9 +58,9 @@ const cancel = () => {
   sendDialogCancel()
   visible.dialog = false
 }
-const openTianDiTuConfig = () => {
+const openTianDiTuConfig = (path) => {
   router.push({
-    path: '/tdt_config'
+    path: path
   })
   visible.dialog = true
 }

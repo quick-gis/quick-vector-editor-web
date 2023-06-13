@@ -22,6 +22,14 @@ const router = createRouter({
         // @ts-ignore
         return import('../views/token/TianDiTuToken.vue')
       }
+    },
+    {
+      path: '/gen_csv',
+      name: 'genCsv',
+      component: () => {
+        // @ts-ignore
+        return import('../views/gen/GenCsv.vue')
+      }
     }
   ]
 })
