@@ -1,8 +1,8 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useMapCurStore } from '@/stores/mapCur'
 import { onMounted, reactive, ref } from 'vue'
 import { QvMap } from '@/views/map/QvMap'
-import { ProdLayersTypeEnum } from '@/views/map/ConstValue'
+import eventBus from '@/utils/eventBus'
 
 const chuanbo = () => {
   console.log('传播')
@@ -28,11 +28,37 @@ let mapData = reactive({
 
 let qvMap = new QvMap('map', mapData)
 
+/**
+ * 事件处理器
+ */
+const ebs = () => {
+  eventBus.on('closeDiTuLayer', (e) => {
+    console.log('closeDiTuLayer', e)
+    qvMap.showOrDisplay(e, false)
+  })
+  eventBus.on('openDiTuLayer', (e) => {
+    console.log('openDiTuLayer', e)
+    qvMap.showOrDisplay(e, true)
+  })
+  eventBus.on('closeVectorLayer', (e) => {
+    console.log('closeVectorLayer', e)
+    let layersByUid = qvMap.getLayersByUid(e)
+    layersByUid.setVisible(false)
+  })
+  eventBus.on('openVectorLayer', (e) => {
+    console.log('openVectorLayer', e)
+    let layersByUid = qvMap.getLayersByUid(e)
+    layersByUid.setVisible(true)
+  })
+}
+
 onMounted(() => {
   console.log('初始化地图')
   map.value = qvMap.initMap()
-  qvMap.showOrDisplay(ProdLayersTypeEnum.vec_c_jwd, true)
-  qvMap.showOrDisplay(ProdLayersTypeEnum.vec_jwd_label, true)
+
+  ebs()
+  // qvMap.showOrDisplay(ProdLayersTypeEnum.vec_c_jwd, true)
+  // qvMap.showOrDisplay(ProdLayersTypeEnum.vec_jwd_label, true)
 })
 </script>
 

@@ -5,7 +5,8 @@ export const useMapCurStore = defineStore('map_cur', () => {
   const mapCurData = reactive({
     x: -1,
     y: -1,
-    zoom: -1
+    zoom: -1,
+    proj: 'EPSG:4326'
   })
 
   return { mapCurData }

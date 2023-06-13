@@ -21,6 +21,9 @@ const data = reactive({
     <t-space
       >zoom:<t-space size="medium"> {{ useMapCurStore().mapCurData.zoom }}</t-space>
     </t-space>
+    <t-space
+      >PROJ:<t-space size="medium"> {{ useMapCurStore().mapCurData.proj }}</t-space>
+    </t-space>
   </t-space>
 </template>
 

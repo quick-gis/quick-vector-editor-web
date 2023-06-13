@@ -8,6 +8,7 @@
         <t-submenu title="成图" value="1-0">
           <t-menu-item value="1-1-1"> 导入 CSV</t-menu-item>
           <t-menu-item value="1-1-2"> 导入 Excel</t-menu-item>
+          <t-menu-item value="1-1-3"> 导入 GeoJson</t-menu-item>
           <t-menu-item value="1-1-3"> 导入 MySQL</t-menu-item>
         </t-submenu>
         <t-submenu title="数据" value="1-2">
