@@ -50,6 +50,11 @@ const ebs = () => {
     let layersByUid = qvMap.getLayersByUid(e)
     layersByUid.setVisible(true)
   })
+
+  eventBus.on('gen-csv', (e) => {
+    console.log(e)
+    qvMap.addGeoJsonForCsvImport(e.uid, e.geo, e.geo_type)
+  })
 }
 
 onMounted(() => {

@@ -28,6 +28,7 @@
 
   <div id="dialog">
     <t-dialog
+      :width="visible.dialog_width"
       @confirm="confirm"
       @cancel="cancel"
       v-model:visible="visible.dialog"
@@ -44,7 +45,8 @@ import router from '@/router'
 import eventBus, { sendDialogCancel, sendDialogConfirm } from '@/utils/eventBus'
 
 const visible = reactive({
-  dialog: false
+  dialog: false,
+  dialog_width: '75%'
 })
 const confirm = () => {
   sendDialogConfirm()

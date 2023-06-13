@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
 import TopMenu from '@/views/topmenu/TopMenu.vue'
 import FooterMap from '@/views/footer/FooterMap.vue'
 import MapView from '@/views/map/MapView.vue'

@@ -393,7 +393,7 @@ export class QvMap {
     this._map.addLayer(vectorLayer)
   }
 
-  addGeoJsonForImport(uid: string, json: object, type: string) {
+  addGeoJsonForCsvImport(uid: string, json: object, type: string) {
     let vectorLayer = new VectorLayer({
       source: new VectorSource({
         features: new GeoJSON().readFeatures(json)
