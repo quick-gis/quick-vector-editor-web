@@ -151,12 +151,6 @@ export class QvMap {
     this.openSelect = !this.openSelect
   }
 
-  closeSelector() {
-    this.mapData.openSelect = false
-    this._map.removeInteraction(getSelectPlus(this.mapData))
-    this.openSelect = !this.openSelect
-  }
-
   openOrCloseCoordinatePickup() {
     this.mapData.isOpenCoordinatePicku = !this.mapData.isOpenCoordinatePicku
     if (this.mapData.isOpenCoordinatePicku) {

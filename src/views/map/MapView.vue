@@ -61,6 +61,16 @@ const ebs = () => {
   eventBus.on('gen-mysql', (e) => {
     qvMap.addSqlGeojsonFile(e.uid, e.geojsons[0])
   })
+  eventBus.on('map-change-module', (e) => {
+    let module = e.module
+    if (module == 'view') {
+      // 开启属性查看模式
+      mapData.openSelect = true
+    } else {
+      mapData.openSelect = false
+    }
+    qvMap.openOrClose()
+  })
 }
 
 onMounted(() => {

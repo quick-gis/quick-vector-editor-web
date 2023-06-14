@@ -6,7 +6,8 @@ export const useMapCurStore = defineStore('map_cur', () => {
     x: -1,
     y: -1,
     zoom: -1,
-    proj: 'EPSG:4326'
+    proj: 'EPSG:4326',
+    module: 'ordinary'
   })
 
   return { mapCurData }
