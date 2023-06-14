@@ -3,6 +3,8 @@ import { useMapCurStore } from '@/stores/mapCur'
 import { onMounted, reactive, ref } from 'vue'
 import { QvMap } from '@/views/map/QvMap'
 import eventBus from '@/utils/eventBus'
+import { findNodeByLabel } from '@/utils/NodeUtil'
+import { ProdLayersTypeEnum } from '@/views/map/ConstValue'
 
 const chuanbo = () => {
   console.log('传播')
@@ -54,6 +56,10 @@ const ebs = () => {
   eventBus.on('gen-csv', (e) => {
     console.log(e)
     qvMap.addGeoJsonForCsvImport(e.uid, e.geo, e.geo_type)
+  })
+
+  eventBus.on('gen-mysql', (e) => {
+    qvMap.addSqlGeojsonFile(e.uid, e.geojsons[0])
   })
 }
 

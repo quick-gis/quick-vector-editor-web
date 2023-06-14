@@ -9,7 +9,9 @@
           <t-menu-item value="1-1-1" @click="openTianDiTuConfig('/gen_csv')"> 导入 CSV</t-menu-item>
           <t-menu-item value="1-1-2"> 导入 Excel</t-menu-item>
           <t-menu-item value="1-1-3"> 导入 GeoJson</t-menu-item>
-          <t-menu-item value="1-1-3"> 导入 MySQL</t-menu-item>
+          <t-menu-item value="1-1-4" @click="openTianDiTuConfig('/gen_mysql')">
+            导入 MySQL</t-menu-item
+          >
         </t-submenu>
         <t-submenu title="数据" value="1-2">
           <t-menu-item value="1-2-1"> 导出 GeoJson</t-menu-item>

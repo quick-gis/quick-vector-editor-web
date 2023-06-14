@@ -11,7 +11,7 @@ onMounted(() => {
   eventBus.on('dialog_confirm', (e) => {
     ok()
     eventBus.emit('gen-csv', data.dataRes)
-    // sendDialogConfirmHandlerOk()
+    sendDialogConfirmHandlerOk()
   })
 })
 

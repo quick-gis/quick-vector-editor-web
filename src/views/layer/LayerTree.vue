@@ -117,6 +117,7 @@ const onClick = (context) => {
   console.info('onClick:', context)
 }
 const defaultValue = ref([])
+
 eventBus.on('gen-csv', (e) => {
   console.log(e)
   let findNodeByLabel1 = findNodeByLabel(data.itemsString, '文件图层')
@@ -126,6 +127,22 @@ eventBus.on('gen-csv', (e) => {
     label: e.fileName,
     uid: e.uid,
     tag: ProdLayersTypeEnum.file,
+    geo_type: e.geo_type,
+    checked: true
+  }
+  tree.value.appendTo(findNodeByLabel1.value, node)
+  tree.value.setItem(e.uid, { checked: true })
+  aboutNode.selectNode.unshift(e.uid)
+  findNodeByLabel1.children.unshift(node)
+})
+
+eventBus.on('gen-mysql', (e) => {
+  let findNodeByLabel1 = findNodeByLabel(data.itemsString, '数据库图层')
+  let node = {
+    value: e.uid,
+    label: e.name,
+    uid: e.uid,
+    tag: ProdLayersTypeEnum.sql,
     geo_type: e.geo_type,
     checked: true
   }

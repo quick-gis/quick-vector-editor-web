@@ -11,7 +11,9 @@ import router from './router'
 const app = createApp(App)
 
 app.config.errorHandler = (err, vm, info) => {
-  MessagePlugin('error', { content: err.message })
+  MessagePlugin('error', { content: err.message }).then((r) => {
+    console.log(r)
+  })
   console.error('发生了一个异常：', err, vm, info)
 }
 app.use(createPinia())

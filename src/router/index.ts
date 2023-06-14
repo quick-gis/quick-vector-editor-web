@@ -30,6 +30,14 @@ const router = createRouter({
         // @ts-ignore
         return import('../views/gen/GenCsv.vue')
       }
+    },
+    {
+      path: '/gen_mysql',
+      name: 'genMysql',
+      component: () => {
+        // @ts-ignore
+        return import('../views/gen/GenMysql.vue')
+      }
     }
   ]
 })
