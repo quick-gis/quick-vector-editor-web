@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, reactive } from 'vue'
 import eventBus, { sendDialogConfirmHandlerOk } from '@/utils/eventBus'
+const PATH = "/const PATH = '/tdt_config'\n"
 
 const data = reactive({
   x: 0,
@@ -9,11 +10,13 @@ const data = reactive({
 
 onMounted(() => {
   eventBus.on('dialog_confirm', (e) => {
-    eventBus.emit('positioning', {
-      x: data.x,
-      y: data.y
-    })
-    sendDialogConfirmHandlerOk()
+    if (e.path == PATH) {
+      eventBus.emit('positioning', {
+        x: data.x,
+        y: data.y
+      })
+      sendDialogConfirmHandlerOk()
+    }
   })
 })
 </script>

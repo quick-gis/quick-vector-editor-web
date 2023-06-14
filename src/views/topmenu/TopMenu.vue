@@ -7,11 +7,13 @@
         </template>
         <t-submenu title="成图" value="1-0">
           <t-menu-item value="1-1-1" @click="openTianDiTuConfig('/gen_csv')"> 导入 CSV</t-menu-item>
-          <t-menu-item value="1-1-2"> 导入 Excel</t-menu-item>
-          <t-menu-item value="1-1-3"> 导入 GeoJson</t-menu-item>
+          <!--          <t-menu-item value="1-1-2"> 导入 Excel</t-menu-item>-->
+          <t-menu-item value="1-1-3" @click="openTianDiTuConfig('/gen_geo_json')">
+            导入 GeoJson
+          </t-menu-item>
           <t-menu-item value="1-1-4" @click="openTianDiTuConfig('/gen_mysql')">
-            导入 MySQL</t-menu-item
-          >
+            导入 MySQL
+          </t-menu-item>
         </t-submenu>
         <t-submenu title="数据" value="1-2">
           <t-menu-item value="1-2-1"> 导出 GeoJson</t-menu-item>
@@ -22,24 +24,25 @@
           <span>配置</span>
         </template>
         <t-menu-item value="2-0" @click="openTianDiTuConfig('/tdt_config')"
-          >天地图token</t-menu-item
-        > </t-submenu
-      ><t-submenu value="3">
+          >天地图token
+        </t-menu-item>
+      </t-submenu>
+      <t-submenu value="3">
         <template #title>
           <span>工具</span>
         </template>
-        <t-menu-item value="3-0" @click="openTianDiTuConfig('/move_xy')">移动到XY</t-menu-item>
+        <t-menu-item value="3-0" @click="openTianDiTuConfig('/ç')">移动到XY</t-menu-item>
       </t-submenu>
     </t-head-menu>
   </div>
 
   <div id="dialog">
     <t-dialog
-      :width="visible.dialog_width"
-      @confirm="confirm"
-      @cancel="cancel"
       v-model:visible="visible.dialog"
       :draggable="true"
+      :width="visible.dialog_width"
+      @cancel="cancel"
+      @confirm="confirm"
     >
       <router-view />
     </t-dialog>
@@ -47,7 +50,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import router from '@/router'
 import eventBus, { sendDialogCancel, sendDialogConfirm } from '@/utils/eventBus'
 
@@ -55,8 +58,9 @@ const visible = reactive({
   dialog: false,
   dialog_width: '75%'
 })
+const pathV = ref()
 const confirm = () => {
-  sendDialogConfirm()
+  sendDialogConfirm(pathV.value)
 }
 onMounted(() => {
   eventBus.on('dialog_confirm_handler_ok', () => {
@@ -71,6 +75,7 @@ const openTianDiTuConfig = (path) => {
   router.push({
     path: path
   })
+  pathV.value = path
   visible.dialog = true
 }
 </script>

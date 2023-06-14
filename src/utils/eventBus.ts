@@ -5,8 +5,8 @@ import { ProdLayersTypeEnum } from '@/views/map/ConstValue'
 /**
  * 传递对话框的确定按钮点击的事件
  */
-export function sendDialogConfirm() {
-  emitter.emit('dialog_confirm')
+export function sendDialogConfirm(path: string) {
+  emitter.emit('dialog_confirm', { path: path })
 }
 
 /**

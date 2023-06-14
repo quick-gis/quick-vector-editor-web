@@ -32,6 +32,14 @@ const router = createRouter({
       }
     },
     {
+      path: '/gen_geo_json',
+      name: 'genGeoJson',
+      component: () => {
+        // @ts-ignore
+        return import('../views/gen/GenGeoJson.vue')
+      }
+    },
+    {
       path: '/gen_mysql',
       name: 'genMysql',
       component: () => {

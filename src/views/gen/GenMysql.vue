@@ -4,19 +4,22 @@ import * as mysql from 'mysql'
 import { BgAxios } from '@/utils/axiosUtils'
 import eventBus, { sendDialogConfirmHandlerOk } from '@/utils/eventBus'
 import { v4 as uuidv4 } from 'uuid'
+const PATH = '/gen_mysql'
 
 onMounted(() => {
   eventBus.on('dialog_confirm', async (e) => {
-    await calcGeojson()
-    await nextTick(() => {
-      eventBus.emit('gen-mysql', {
-        geojsons: data.geojsonCollections,
-        name: data.linkConfig.table,
-        gro_type: data.type,
-        uid: uuidv4()
+    if (e.path == PATH) {
+      await calcGeojson()
+      await nextTick(() => {
+        eventBus.emit('gen-mysql', {
+          geojsons: data.geojsonCollections,
+          name: data.linkConfig.table,
+          gro_type: data.type,
+          uid: uuidv4()
+        })
       })
-    })
-    sendDialogConfirmHandlerOk()
+      sendDialogConfirmHandlerOk()
+    }
   })
 })
 const data = reactive({

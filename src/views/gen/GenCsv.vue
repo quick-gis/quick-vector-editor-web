@@ -6,12 +6,14 @@ import { v4 as uuidv4 } from 'uuid'
 import { MessagePlugin } from 'tdesign-vue-next'
 
 let reader = new FileReader()
-
+const PATH = '/gen_csv'
 onMounted(() => {
   eventBus.on('dialog_confirm', (e) => {
-    ok()
-    eventBus.emit('gen-csv', data.dataRes)
-    sendDialogConfirmHandlerOk()
+    if (e.path == PATH) {
+      ok()
+      eventBus.emit('gen-csv', data.dataRes)
+      sendDialogConfirmHandlerOk()
+    }
   })
 })
 

@@ -230,6 +230,24 @@ eventBus.on('gen-mysql', (e) => {
   aboutNode.selectNode.unshift(e.uid)
   findNodeByLabel1.children.unshift(node)
 })
+
+eventBus.on('gen-geojson', (e) => {
+  console.log(e)
+  let findNodeByLabel1 = findNodeByLabel(data.itemsString, '文件图层')
+
+  let node = {
+    value: e.uid,
+    label: e.name,
+    uid: e.uid,
+    tag: ProdLayersTypeEnum.file,
+    geo_type: e.geo_type,
+    checked: true
+  }
+  tree.value.appendTo(findNodeByLabel1.value, node)
+  tree.value.setItem(e.uid, { checked: true })
+  aboutNode.selectNode.unshift(e.uid)
+  findNodeByLabel1.children.unshift(node)
+})
 const onChange = (checked, context) => {
   // 找到需要设置为关闭的节点
   let closeNode = difference(aboutNode.selectNode, checked)

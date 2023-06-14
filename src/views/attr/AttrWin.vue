@@ -21,11 +21,19 @@ eventBus.on('attr-click', (e) => {
   let d = getCoordinates(feature.geometry)
   const arr = []
   for (let i in d) {
-    arr.push({
-      id: i + 1,
-      x: d[i][0][0],
-      y: d[i][1][1]
-    })
+    if (d[i][0][0]) {
+      arr.push({
+        id: i,
+        x: d[i][0][0],
+        y: d[i][1][1]
+      })
+    } else {
+      arr.push({
+        id: i,
+        x: d[i][0],
+        y: d[i][1]
+      })
+    }
   }
   tableData.value = arr
 })

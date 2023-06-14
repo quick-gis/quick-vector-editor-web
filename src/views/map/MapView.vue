@@ -76,6 +76,9 @@ const ebs = () => {
     // 地图上标记一个闪烁的点 5秒后移除
     qvMap.addShanLayers(e.x, e.y, 3000)
   })
+  eventBus.on('gen-geojson', (e) => {
+    qvMap.addGeojsonFile(e.uid, e.geojson)
+  })
 }
 
 onMounted(() => {
