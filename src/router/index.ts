@@ -38,6 +38,14 @@ const router = createRouter({
         // @ts-ignore
         return import('../views/gen/GenMysql.vue')
       }
+    },
+    {
+      path: '/move_xy',
+      name: 'move_xy',
+      component: () => {
+        // @ts-ignore
+        return import('../views/tools/move_xy/MoveToXY.vue')
+      }
     }
   ]
 })

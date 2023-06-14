@@ -23,7 +23,12 @@
         </template>
         <t-menu-item value="2-0" @click="openTianDiTuConfig('/tdt_config')"
           >天地图token</t-menu-item
-        >
+        > </t-submenu
+      ><t-submenu value="3">
+        <template #title>
+          <span>工具</span>
+        </template>
+        <t-menu-item value="2-0" @click="openTianDiTuConfig('/move_xy')">移动到XY</t-menu-item>
       </t-submenu>
     </t-head-menu>
   </div>

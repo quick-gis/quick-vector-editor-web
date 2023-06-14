@@ -11,6 +11,7 @@ import router from './router'
 const app = createApp(App)
 
 app.config.errorHandler = (err, vm, info) => {
+  // @ts-ignore
   MessagePlugin('error', { content: err.message }).then((r) => {
     console.log(r)
   })
