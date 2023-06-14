@@ -28,7 +28,7 @@
         <template #title>
           <span>工具</span>
         </template>
-        <t-menu-item value="2-0" @click="openTianDiTuConfig('/move_xy')">移动到XY</t-menu-item>
+        <t-menu-item value="3-0" @click="openTianDiTuConfig('/move_xy')">移动到XY</t-menu-item>
       </t-submenu>
     </t-head-menu>
   </div>
