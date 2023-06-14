@@ -5,7 +5,11 @@ import { QvMap } from '@/views/map/QvMap'
 import eventBus from '@/utils/eventBus'
 import { findNodeByLabel } from '@/utils/NodeUtil'
 import { ProdLayersTypeEnum } from '@/views/map/ConstValue'
-
+import { Circle, Fill, Stroke, Style } from 'ol/style'
+import { Point } from 'ol/geom'
+import { Feature } from 'ol'
+import { Vector as VectorSource } from 'ol/source.js'
+import { Vector as VectorLayer } from 'ol/layer.js'
 const map = ref<any>()
 let mapData = reactive({
   coordinates: [],
@@ -64,6 +68,13 @@ const ebs = () => {
       mapData.openSelect = false
     }
     qvMap.openOrClose()
+  })
+
+  eventBus.on('positioning', (e) => {
+    // 地图中心移动到 e.x e.y
+    qvMap.moveToXY(e.x, e.y)
+    // 地图上标记一个闪烁的点 5秒后移除
+    qvMap.addShanLayers(e.x, e.y, 3000)
   })
 }
 

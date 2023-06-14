@@ -6,7 +6,7 @@ import GeoJSON from 'ol/format/GeoJSON.js'
 import { ProdLayersTypeEnum } from './ConstValue'
 import { GetTianDiTuLayers } from './Tdt'
 import { Layer } from 'ol/layer'
-import { MapBrowserEvent } from 'ol'
+import { Feature, MapBrowserEvent } from 'ol'
 import { reactive } from 'vue'
 import { Modify, Select, Snap } from 'ol/interaction'
 import { getCenter } from 'ol/extent'
@@ -15,6 +15,8 @@ import { DefaultSelectStyle, SelectedStyles } from '@/views/map/mapmapStyle'
 import { buffer } from '@turf/turf'
 import { useMapCurStore } from '@/stores/mapCur'
 import eventBus from '@/utils/eventBus'
+import { Point } from 'ol/geom'
+import { Circle, Stroke, Style } from 'ol/style'
 
 function getSelectPlus(mapData: any) {
   const clickInteraction = new Select({
@@ -534,6 +536,39 @@ export class QvMap {
       this._map.removeInteraction(this.curEditorLayer.modify)
       this._map.removeInteraction(this.curEditorLayer.snap)
     }
+  }
+  addShanLayers(x: number, y: number, expire: number) {
+    let feature = new Feature({
+      geometry: new Point([x, y])
+    })
+    let vectorSource = new VectorSource({
+      features: [feature]
+    })
+    let vectorLayer = new VectorLayer({
+      source: vectorSource,
+      zIndex: 999999999999
+    })
+
+    this.map.addLayer(vectorLayer)
+    let radius = 0
+    this.map.on('postcompose', function () {
+      radius++
+      radius = radius % 50
+      // 设置样式
+      feature.setStyle(
+        new Style({
+          image: new Circle({
+            radius: radius,
+            stroke: new Stroke({
+              color: 'red'
+            })
+          })
+        })
+      )
+    })
+    setTimeout(() => {
+      this._map.removeLayer(vectorLayer)
+    }, expire)
   }
 }
 

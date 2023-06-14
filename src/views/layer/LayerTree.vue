@@ -13,7 +13,7 @@
       @click="onClick"
     >
       <template #label="node">
-        <t-space @contextmenu="a($event, node)">{{ node.node.label }}</t-space>
+        <t-space @contextmenu="a($event, node.node)">{{ node.node.label }}</t-space>
       </template>
     </t-tree>
   </t-space>
@@ -38,7 +38,18 @@
         "
         height="550px"
       >
-        <t-submenu value="3-1" title="数据">
+        <t-submenu
+          v-if="
+            curNode.tag == ProdLayersTypeEnum.file ||
+            curNode.tag == ProdLayersTypeEnum.sql ||
+            curNode.tag == ProdLayersTypeEnum.buffer ||
+            curNode.tag == ProdLayersTypeEnum.line_ring ||
+            curNode.tag == ProdLayersTypeEnum.line_self_ov ||
+            curNode.tag == ProdLayersTypeEnum.point_repeat
+          "
+          value="3-1"
+          title="数据"
+        >
           <t-menu-item value="3-1-1">导出 Shp </t-menu-item>
           <t-menu-item value="3-1-2">导出 GeoJson </t-menu-item>
         </t-submenu>
@@ -48,21 +59,9 @@
 </template>
 
 <script setup>
-// import { ChevronDownIcon } from 'tdesign-icons-vue-next'
+import { ChevronDownIcon } from 'tdesign-icons-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'
 
-const options = [
-  {
-    content: '选项一',
-    value: 1,
-    children: [
-      {
-        content: '选项九',
-        value: 9
-      }
-    ]
-  }
-]
 const curNode = ref()
 const clickHandler = (data) => {
   MessagePlugin.success(`选中【${data.content}】`)
@@ -74,11 +73,24 @@ const contextmenuConfig = reactive({
 })
 const a = (e, node) => {
   e.preventDefault()
-
-  contextmenuConfig.display = true
-  contextmenuConfig.y = e.clientY
-  contextmenuConfig.x = e.clientX
-  curNode.value = node
+  if (node.data.tag) {
+    contextmenuConfig.display = true
+    contextmenuConfig.y = e.clientY
+    contextmenuConfig.x = e.clientX
+    curNode.value = node.data
+  }
+  if (
+    node.data.tag == ProdLayersTypeEnum.vec_c_jwd ||
+    node.data.tag == ProdLayersTypeEnum.vec_jwd_label ||
+    node.data.tag == ProdLayersTypeEnum.vec_c_mkt ||
+    node.data.tag == ProdLayersTypeEnum.vec_mkt_label ||
+    node.data.tag == ProdLayersTypeEnum.img_c_jwd ||
+    node.data.tag == ProdLayersTypeEnum.img_jwd_label ||
+    node.data.tag == ProdLayersTypeEnum.img_c_mkt ||
+    node.data.tag == ProdLayersTypeEnum.img_mkt_label
+  ) {
+    contextmenuConfig.display = false
+  }
 }
 import { reactive, ref } from 'vue'
 import { ProdLayersTypeEnum } from '@/views/map/ConstValue'
@@ -98,15 +110,17 @@ const data = reactive({
       value: '2',
       label: '展示图层',
       disabled: true,
-
+      tag: '',
       children: [
         {
+          tag: '',
           value: '2-1',
           label: '数据库图层',
           children: [],
           disabled: true
         },
         {
+          tag: '',
           value: '2-2',
           label: '文件图层',
           children: [],
@@ -118,17 +132,20 @@ const data = reactive({
       value: '1',
       label: '底图',
       disabled: true,
+      tag: '',
 
       children: [
         {
           value: '1-1',
           label: '天地图',
           disabled: true,
+          tag: '',
 
           children: [
             {
               value: '1-1-2',
               label: '天地图矢量（经纬度投影）',
+              tag: '',
               children: [
                 {
                   value: '1-1-2-1',
@@ -145,7 +162,7 @@ const data = reactive({
             {
               value: '1-1-1',
               label: '天地图影像（经纬度投影）',
-
+              tag: '',
               children: [
                 {
                   value: '1-1-1-1',

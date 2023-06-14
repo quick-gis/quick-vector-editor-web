@@ -6,12 +6,20 @@ const feature = reactive({
   properties: {},
   geometry: {}
 })
+
+const positioning = () => {
+  if (tableData.value) {
+    eventBus.emit('positioning', {
+      x: tableData.value[0].x,
+      y: tableData.value[0].y
+    })
+  }
+}
 eventBus.on('attr-click', (e) => {
   feature.properties = e.geojson.properties
   feature.geometry = e.geojson.geometry
   let d = getCoordinates(feature.geometry)
   const arr = []
-  debugger
   for (let i in d) {
     arr.push({
       id: i + 1,
@@ -59,6 +67,9 @@ const cols = ref([
   <t-form :model="feature" label-position="right" label-width="100px" style="max-width: 460px">
     <t-table :columns="cols" :data="tableData" style="width: 100%"></t-table>
   </t-form>
+  <div>
+    <t-button @click="positioning">定位</t-button>
+  </div>
 </template>
 
 <style scoped></style>
