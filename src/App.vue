@@ -4,6 +4,11 @@ import FooterMap from '@/views/footer/FooterMap.vue'
 import MapView from '@/views/map/MapView.vue'
 import LayerTree from '@/views/layer/LayerTree.vue'
 import AttrWin from '@/views/attr/AttrWin.vue'
+import eventBus from '@/utils/eventBus'
+
+document.body.addEventListener('click', (e) => {
+  eventBus.emit('click-body')
+})
 </script>
 
 <template>

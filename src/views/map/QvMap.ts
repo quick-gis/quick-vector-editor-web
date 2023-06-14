@@ -75,6 +75,9 @@ const a = {
 const geojson = new GeoJSON()
 
 export class QvMap {
+  get map(): OlMap {
+    return this._map
+  }
   static addLayerBaseIndex = 30000
   static bufferBaseIndex = 10000
   static DbBaseIndex = 10000

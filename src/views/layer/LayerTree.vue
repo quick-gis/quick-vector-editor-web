@@ -11,16 +11,76 @@
       value-mode="onlyLeaf"
       @change="onChange"
       @click="onClick"
-    />
+    >
+      <template #label="node">
+        <t-space @contextmenu="a($event, node)">{{ node.node.label }}</t-space>
+      </template>
+    </t-tree>
   </t-space>
-  <t-button @click="a">a</t-button>
+
+  <div
+    v-if="contextmenuConfig.display"
+    id="contextmenu"
+    :style="{
+      top: contextmenuConfig.y + 'px',
+      left: contextmenuConfig.x + 'px'
+    }"
+  >
+    <t-space class="tdesign-demo-dropdown">
+      <t-menu
+        theme="light"
+        expand-type="popup"
+        style="
+          margin-right: 40px;
+
+          border: 1px solid #999999;
+          background-color: #f4f4f4;
+        "
+        height="550px"
+      >
+        <t-submenu value="3-1" title="数据">
+          <t-menu-item value="3-1-1">导出 Shp </t-menu-item>
+          <t-menu-item value="3-1-2">导出 GeoJson </t-menu-item>
+        </t-submenu>
+      </t-menu>
+    </t-space>
+  </div>
 </template>
 
 <script setup>
-const a = () => {
-  console.log(tree.value.getItems())
+// import { ChevronDownIcon } from 'tdesign-icons-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
+
+const options = [
+  {
+    content: '选项一',
+    value: 1,
+    children: [
+      {
+        content: '选项九',
+        value: 9
+      }
+    ]
+  }
+]
+const curNode = ref()
+const clickHandler = (data) => {
+  MessagePlugin.success(`选中【${data.content}】`)
 }
-import { nextTick, reactive, ref } from 'vue'
+const contextmenuConfig = reactive({
+  x: 0,
+  y: 0,
+  display: false
+})
+const a = (e, node) => {
+  e.preventDefault()
+
+  contextmenuConfig.display = true
+  contextmenuConfig.y = e.clientY
+  contextmenuConfig.x = e.clientX
+  curNode.value = node
+}
+import { reactive, ref } from 'vue'
 import { ProdLayersTypeEnum } from '@/views/map/ConstValue'
 import { difference } from '@/utils/Utils'
 import { findNodeByLabel, findNodeByValue } from '@/utils/NodeUtil'
@@ -67,6 +127,22 @@ const data = reactive({
 
           children: [
             {
+              value: '1-1-2',
+              label: '天地图矢量（经纬度投影）',
+              children: [
+                {
+                  value: '1-1-2-1',
+                  label: '矢量底图',
+                  tag: ProdLayersTypeEnum.vec_c_jwd
+                },
+                {
+                  value: '1-1-2-2',
+                  label: '矢量标注',
+                  tag: ProdLayersTypeEnum.vec_jwd_label
+                }
+              ]
+            },
+            {
               value: '1-1-1',
               label: '天地图影像（经纬度投影）',
 
@@ -80,22 +156,6 @@ const data = reactive({
                   value: '1-1-1-2',
                   label: '影像标注',
                   tag: ProdLayersTypeEnum.img_jwd_label
-                }
-              ]
-            },
-            {
-              value: '1-1-2',
-              label: '天地图矢量（经纬度投影）',
-              children: [
-                {
-                  value: '1-1-2-1',
-                  label: '矢量底图',
-                  tag: ProdLayersTypeEnum.vec_c_jwd
-                },
-                {
-                  value: '1-1-2-2',
-                  label: '矢量标注',
-                  tag: ProdLayersTypeEnum.vec_jwd_label
                 }
               ]
             }
@@ -117,7 +177,9 @@ const onClick = (context) => {
   console.info('onClick:', context)
 }
 const defaultValue = ref([])
-
+eventBus.on('click-body', (e) => {
+  contextmenuConfig.display = false
+})
 eventBus.on('gen-csv', (e) => {
   console.log(e)
   let findNodeByLabel1 = findNodeByLabel(data.itemsString, '文件图层')
@@ -202,3 +264,20 @@ const onChange = (checked, context) => {
   console.log(context)
 }
 </script>
+
+<style scoped>
+#contextmenu {
+  position: fixed;
+  height: auto;
+  width: 120px;
+  border-radius: 3px;
+
+  padding: 10px;
+  z-index: 12;
+
+  button {
+    display: block;
+    margin: 0 0 5px;
+  }
+}
+</style>

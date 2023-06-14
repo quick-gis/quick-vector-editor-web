@@ -6,12 +6,6 @@ import eventBus from '@/utils/eventBus'
 import { findNodeByLabel } from '@/utils/NodeUtil'
 import { ProdLayersTypeEnum } from '@/views/map/ConstValue'
 
-const chuanbo = () => {
-  console.log('传播')
-  useMapCurStore().mapCurData.x = 100
-  useMapCurStore().mapCurData.y = 200
-  useMapCurStore().mapCurData.zoom = 200
-}
 const map = ref<any>()
 let mapData = reactive({
   coordinates: [],
