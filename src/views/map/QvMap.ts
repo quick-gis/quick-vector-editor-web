@@ -14,6 +14,7 @@ import { DefaultSelectStyle, SelectedStyles } from '@/views/map/mapmapStyle'
 // @ts-ignore
 import { buffer } from '@turf/turf'
 import { useMapCurStore } from '@/stores/mapCur'
+import eventBus from '@/utils/eventBus'
 
 function getSelectPlus(mapData: any) {
   const clickInteraction = new Select({
@@ -44,6 +45,10 @@ function getSelectPlus(mapData: any) {
         featureProjection: 'EPSG:4326' // 指定要素的投影坐标系
       })
       mapData.selectData = geoJSON
+
+      eventBus.emit('attr-click', {
+        geojson: JSON.parse(geoJSON)
+      })
 
       console.log('当前点击数据GEOJSON', geoJSON)
       console.log('当前点击数据', data)

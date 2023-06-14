@@ -26,7 +26,7 @@ import AttrWin from '@/views/attr/AttrWin.vue'
             </t-footer>
           </t-layout>
         </t-content>
-        <t-aside style="width: 120px">
+        <t-aside style="width: 240px; overflow: auto">
           <attr-win />
         </t-aside>
       </t-layout>
