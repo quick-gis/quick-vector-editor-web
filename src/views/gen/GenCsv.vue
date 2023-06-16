@@ -87,7 +87,7 @@ const data = reactive({
     data: [],
     header: []
   },
-  pre_list: ['a'],
+  pre_list: ['ringtClick'],
   link_config: {
     canSelectFile: true,
     rules: {

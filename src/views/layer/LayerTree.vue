@@ -13,7 +13,7 @@
       @click="onClick"
     >
       <template #label="node">
-        <t-space @contextmenu="a($event, node.node)">{{ node.node.label }}</t-space>
+        <t-space @contextmenu="rightClick($event, node.node)">{{ node.node.label }}</t-space>
       </template>
     </t-tree>
   </t-space>
@@ -71,7 +71,7 @@ const contextmenuConfig = reactive({
   y: 0,
   display: false
 })
-const a = (e, node) => {
+const rightClick = (e, node) => {
   e.preventDefault()
   if (node.data.tag) {
     contextmenuConfig.display = true
@@ -102,6 +102,7 @@ import eventBus, {
   openDiTuLayer,
   openVectorLayer
 } from '@/utils/eventBus'
+import { useMapCurStore } from '@/stores/mapCur'
 
 const tree = ref()
 const data = reactive({
@@ -209,6 +210,11 @@ eventBus.on('gen-csv', (e) => {
     geo_type: e.geo_type,
     checked: true
   }
+  useMapCurStore().mapCurData.canEditorLayerNode.push({
+    nid: e.uid,
+    name: e.fileName
+  })
+
   tree.value.appendTo(findNodeByLabel1.value, node)
   tree.value.setItem(e.uid, { checked: true })
   aboutNode.selectNode.unshift(e.uid)
@@ -225,6 +231,10 @@ eventBus.on('gen-mysql', (e) => {
     geo_type: e.geo_type,
     checked: true
   }
+  useMapCurStore().mapCurData.canEditorLayerNode.push({
+    nid: e.uid,
+    name: e.name
+  })
   tree.value.appendTo(findNodeByLabel1.value, node)
   tree.value.setItem(e.uid, { checked: true })
   aboutNode.selectNode.unshift(e.uid)
@@ -243,6 +253,11 @@ eventBus.on('gen-geojson', (e) => {
     geo_type: e.geo_type,
     checked: true
   }
+  useMapCurStore().mapCurData.canEditorLayerNode.push({
+    nid: e.uid,
+    name: e.name
+  })
+
   tree.value.appendTo(findNodeByLabel1.value, node)
   tree.value.setItem(e.uid, { checked: true })
   aboutNode.selectNode.unshift(e.uid)

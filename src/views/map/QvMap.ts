@@ -35,11 +35,6 @@ function getSelectPlus(mapData: any) {
     } else {
       data = event.selected[0]
     }
-    if (data) {
-      mapData.isSelect = true
-    } else {
-      mapData.isSelect = false
-    }
     let format = new GeoJSON()
 
     if (data) {
@@ -150,15 +145,11 @@ export class QvMap {
     this.mapData = obj
   }
 
-  openOrClose() {
-    if (this.openSelect) {
-      this.mapData.openSelect = false
-      this._map.removeInteraction(getSelectPlus(this.mapData))
-    } else {
-      this.mapData.openSelect = true
-      this._map.addInteraction(getSelectPlus(this.mapData))
-    }
-    this.openSelect = !this.openSelect
+  openSelectO() {
+    this._map.addInteraction(getSelectPlus(this.mapData))
+  }
+  closeSelect() {
+    this._map.removeInteraction(getSelectPlus(this.mapData))
   }
 
   openOrCloseCoordinatePickup() {

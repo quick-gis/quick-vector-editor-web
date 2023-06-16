@@ -7,6 +7,7 @@ import { Vector as VectorLayer } from 'ol/layer'
 import { Vector as VectorSource } from 'ol/source'
 import GeoJSON from 'ol/format/GeoJSON'
 import { SelectedStyles } from '@/views/map/mapmapStyle'
+import { useMapCurStore } from '@/stores/mapCur'
 
 const map = ref<any>()
 let mapData = reactive({
@@ -61,11 +62,17 @@ const ebs = () => {
     let module = e.module
     if (module == 'view') {
       // 开启属性查看模式
-      mapData.openSelect = true
+      // 查看模式切换没有关闭
+      qvMap.openSelectO()
     } else {
-      mapData.openSelect = false
+      qvMap.closeSelect()
     }
-    qvMap.openOrClose()
+
+    if (module != 'editor') {
+      if (useMapCurStore().mapCurData.curEditorLayerNid) {
+        qvMap.endEditor(useMapCurStore().mapCurData.curEditorLayerNid)
+      }
+    }
   })
 
   eventBus.on('positioning', (e) => {
@@ -78,6 +85,18 @@ const ebs = () => {
     qvMap.addGeojsonFile(e.uid, e.geojson)
   })
 
+  eventBus.on('stop-editor', (e) => {
+    if (e.nid) {
+      qvMap.endEditor(e.nid)
+    }
+  })
+  eventBus.on('start-editor', (e) => {
+    if (e.nid) {
+      qvMap.startEditor(e.nid)
+    }
+  })
+
+  //todo: 功能还不正确（数据相关
   eventBus.on('subway', (e) => {
     let features = []
 

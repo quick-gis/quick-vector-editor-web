@@ -5,6 +5,7 @@ import MapView from '@/views/map/MapView.vue'
 import LayerTree from '@/views/layer/LayerTree.vue'
 import AttrWin from '@/views/attr/AttrWin.vue'
 import eventBus from '@/utils/eventBus'
+import { useMapCurStore } from '@/stores/mapCur'
 
 document.body.addEventListener('click', (e) => {
   eventBus.emit('click-body')
@@ -31,6 +32,7 @@ document.body.addEventListener('click', (e) => {
             </t-footer>
           </t-layout>
         </t-content>
+        <!--        todo: 右侧属性查看界面处理-->
         <t-aside style="width: 240px; overflow: auto">
           <attr-win />
         </t-aside>
