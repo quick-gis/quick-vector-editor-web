@@ -50,7 +50,7 @@
           value="3-1"
           title="数据"
         >
-          <t-menu-item value="3-1-1">导出 Shp </t-menu-item>
+          <t-menu-item value="3-1-1" @click="exportShp">导出 Shp </t-menu-item>
           <t-menu-item value="3-1-2" @click="exportGeojson">导出 GeoJson </t-menu-item>
         </t-submenu>
       </t-menu>
@@ -107,6 +107,9 @@ import { useMapCurStore } from '@/stores/mapCur'
 const tree = ref()
 const exportGeojson = () => {
   eventBus.emit('export-geojson', { uid: curNode.value.uid })
+}
+const exportShp = () => {
+  eventBus.emit('export-shp', { uid: curNode.value.uid })
 }
 const data = reactive({
   itemsString: [

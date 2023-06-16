@@ -9,6 +9,7 @@ import GeoJSON from 'ol/format/GeoJSON'
 import { SelectedStyles } from '@/views/map/mapmapStyle'
 import { useMapCurStore } from '@/stores/mapCur'
 import { saveAs } from 'file-saver'
+import { BgAxios } from '@/utils/axiosUtils'
 
 const map = ref<any>()
 let mapData = reactive({
@@ -32,6 +33,29 @@ function exportGeojson(e) {
   let str = qvMap.GetGeojsonWithLayer(e.uid)
   let strData = new Blob([str], { type: 'text/plain;charset=utf-8' })
   saveAs(strData, 'export.json')
+}
+function exportShp(e) {
+  let str = qvMap.GetGeojsonWithLayer(e.uid)
+  BgAxios()
+    .post(
+      '/tools/geojson_to_shp',
+      {
+        json: str
+      },
+      {
+        responseType: 'blob',
+        timeout: 10000
+      }
+    )
+    .then((res) => {
+      let blob = new Blob([res.data], {})
+      let objectUrl = URL.createObjectURL(blob)
+      let a = document.createElement('a')
+      a.href = objectUrl
+      a.download = 'export.zip'
+      a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }))
+      window.URL.revokeObjectURL(blob)
+    })
 }
 
 /**
@@ -67,6 +91,9 @@ const ebs = () => {
   })
   eventBus.on('export-geojson', (e) => {
     exportGeojson(e)
+  })
+  eventBus.on('export-shp', (e) => {
+    exportShp(e)
   })
 
   eventBus.on('map-change-module', (e) => {
