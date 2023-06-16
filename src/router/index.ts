@@ -54,6 +54,14 @@ const router = createRouter({
         // @ts-ignore
         return import('../views/tools/move_xy/MoveToXY.vue')
       }
+    },
+    {
+      path: '/subway',
+      name: 'subway',
+      component: () => {
+        // @ts-ignore
+        return import('../views/dataview/GaoDeSubway.vue')
+      }
     }
   ]
 })

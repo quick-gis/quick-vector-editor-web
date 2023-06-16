@@ -31,7 +31,15 @@
         <template #title>
           <span>工具</span>
         </template>
-        <t-menu-item value="3-0" @click="openTianDiTuConfig('/ç')">移动到XY</t-menu-item>
+        <t-menu-item value="3-0" @click="openTianDiTuConfig('/move_xy')">移动到XY</t-menu-item>
+      </t-submenu>
+      <t-submenu value="4">
+        <template #title>
+          <span>外部数据获取</span>
+        </template>
+        <t-menu-item value="4-0" @click="openTianDiTuConfig('/subway')"
+          >查看高德地图地铁</t-menu-item
+        >
       </t-submenu>
     </t-head-menu>
   </div>

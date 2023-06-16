@@ -1,15 +1,13 @@
 <script lang="ts" setup>
-import { useMapCurStore } from '@/stores/mapCur'
 import { onMounted, reactive, ref } from 'vue'
 import { QvMap } from '@/views/map/QvMap'
 import eventBus from '@/utils/eventBus'
-import { findNodeByLabel } from '@/utils/NodeUtil'
-import { ProdLayersTypeEnum } from '@/views/map/ConstValue'
-import { Circle, Fill, Stroke, Style } from 'ol/style'
-import { Point } from 'ol/geom'
-import { Feature } from 'ol'
-import { Vector as VectorSource } from 'ol/source.js'
-import { Vector as VectorLayer } from 'ol/layer.js'
+import { Style } from 'ol/style'
+import { Vector as VectorLayer } from 'ol/layer'
+import { Vector as VectorSource } from 'ol/source'
+import GeoJSON from 'ol/format/GeoJSON'
+import { SelectedStyles } from '@/views/map/mapmapStyle'
+
 const map = ref<any>()
 let mapData = reactive({
   coordinates: [],
@@ -78,6 +76,40 @@ const ebs = () => {
   })
   eventBus.on('gen-geojson', (e) => {
     qvMap.addGeojsonFile(e.uid, e.geojson)
+  })
+
+  eventBus.on('subway', (e) => {
+    let features = []
+
+    for (let d in e.geo) {
+      let fet = []
+      for (let o of e.geo[d]) {
+        fet.push({
+          type: 'Feature',
+          properties: {},
+          geometry: o
+        })
+      }
+      features.push(...fet)
+    }
+
+    let d2 = {
+      type: 'FeatureCollection',
+      features: features
+    }
+
+    let vectorLayer = new VectorLayer({
+      source: new VectorSource({
+        features: new GeoJSON().readFeatures(JSON.parse(JSON.stringify(d2)))
+      }),
+      style: function (f) {
+        // @ts-ignore
+        return SelectedStyles[f.getGeometry().getType()]
+      }
+    })
+    vectorLayer.setZIndex(99999)
+    qvMap.map.addLayer(vectorLayer)
+    console.log(JSON.stringify(d2))
   })
 }
 
