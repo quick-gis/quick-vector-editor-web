@@ -8,6 +8,7 @@ import { Vector as VectorSource } from 'ol/source'
 import GeoJSON from 'ol/format/GeoJSON'
 import { SelectedStyles } from '@/views/map/mapmapStyle'
 import { useMapCurStore } from '@/stores/mapCur'
+import { saveAs } from 'file-saver'
 
 const map = ref<any>()
 let mapData = reactive({
@@ -26,6 +27,12 @@ let mapData = reactive({
 })
 
 let qvMap = new QvMap('map', mapData)
+
+function exportGeojson(e) {
+  let str = qvMap.GetGeojsonWithLayer(e.uid)
+  let strData = new Blob([str], { type: 'text/plain;charset=utf-8' })
+  saveAs(strData, 'export.json')
+}
 
 /**
  * 事件处理器
@@ -58,6 +65,10 @@ const ebs = () => {
   eventBus.on('gen-mysql', (e) => {
     qvMap.addSqlGeojsonFile(e.uid, e.geojsons[0])
   })
+  eventBus.on('export-geojson', (e) => {
+    exportGeojson(e)
+  })
+
   eventBus.on('map-change-module', (e) => {
     let module = e.module
     if (module == 'view') {

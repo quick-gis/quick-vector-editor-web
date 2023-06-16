@@ -62,6 +62,14 @@ const router = createRouter({
         // @ts-ignore
         return import('../views/dataview/GaoDeSubway.vue')
       }
+    },
+    {
+      path: '/expgeojson',
+      name: 'expgeojson',
+      component: () => {
+        // @ts-ignore
+        return import('../views/exp/ExportGeoJson.vue')
+      }
     }
   ]
 })

@@ -9,7 +9,8 @@ export const useMapCurStore = defineStore('map_cur', () => {
     proj: 'EPSG:4326',
     module: 'ordinary',
     canEditorLayerNode: [],
-    curEditorLayerNid: ''
+    curEditorLayerNid: '',
+    exportLayer: ''
   })
 
   return { mapCurData }

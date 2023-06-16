@@ -16,7 +16,9 @@
           </t-menu-item>
         </t-submenu>
         <t-submenu title="数据" value="1-2">
-          <t-menu-item value="1-2-1"> 导出 GeoJson</t-menu-item>
+          <t-menu-item value="1-2-1" @click="openTianDiTuConfig('/expgeojson')">
+            导出 GeoJson</t-menu-item
+          >
         </t-submenu>
       </t-submenu>
       <t-submenu value="2">
