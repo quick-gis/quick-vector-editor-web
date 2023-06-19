@@ -86,6 +86,14 @@ const router = createRouter({
         // @ts-ignore
         return import('../views/label/LabelViewLine.vue')
       }
+    },
+    {
+      path: '/add_conver',
+      name: 'add_conver',
+      component: () => {
+        // @ts-ignore
+        return import('@/views/gen/GenConver.vue')
+      }
     }
   ]
 })

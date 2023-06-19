@@ -19,6 +19,13 @@
           <t-menu-item value="1-2-1" @click="openTianDiTuConfig('/expgeojson')">
             导出 GeoJson
           </t-menu-item>
+          <t-menu-item value="1-2-2" @click="exportMap"> 导出底图</t-menu-item>
+        </t-submenu>
+        <t-submenu title="遮罩" value="1-3">
+          <t-menu-item value="1-3-1" @click="openTianDiTuConfig('/add_conver')"
+            >添加遮罩
+          </t-menu-item>
+          <t-menu-item value="1-3-2" @click="removeConver">移除遮罩</t-menu-item>
         </t-submenu>
       </t-submenu>
       <t-submenu value="2">
@@ -48,6 +55,28 @@
           <span>分析</span>
         </template>
         <t-menu-item value="5-0" @click="openTianDiTuConfig('/buffer')">缓冲区分析</t-menu-item>
+        <t-submenu value="5-1">
+          <template #title>
+            <span>点分析</span>
+          </template>
+          <t-menu-item value="5-1-1" @click="openTianDiTuConfig('/isolation_point')"
+            >孤立点分析
+          </t-menu-item>
+          <t-menu-item value="5-1-2" @click="openTianDiTuConfig('/PointOverride')"
+            >点覆盖分析
+          </t-menu-item>
+        </t-submenu>
+        <t-submenu value="5-2">
+          <template #title>
+            <span>线分析</span>
+          </template>
+          <t-menu-item value="5-2-1" @click="openTianDiTuConfig('/LineCoverage')"
+            >线覆盖分析
+          </t-menu-item>
+          <t-menu-item value="5-2-2" @click="openTianDiTuConfig('/RingAnalysis')"
+            >环分析
+          </t-menu-item>
+        </t-submenu>
       </t-submenu>
 
       <!--      <t-submenu value='测试'>-->
@@ -87,6 +116,12 @@ onMounted(() => {
 const cancel = () => {
   sendDialogCancel()
   visible.dialog = false
+}
+const exportMap = () => {
+  eventBus.emit('exportMap')
+}
+const removeConver = () => {
+  eventBus.emit('remove_conver')
 }
 const openTianDiTuConfig = (path) => {
   router.push({

@@ -15,9 +15,10 @@ import { DefaultSelectStyle, SelectedStyles } from '@/views/map/mapmapStyle'
 import { buffer } from '@turf/turf'
 import { useMapCurStore } from '@/stores/mapCur'
 import eventBus from '@/utils/eventBus'
-import { Point } from 'ol/geom'
+import { LinearRing, Point } from 'ol/geom'
 import { Circle, Fill, Stroke, Style, Text } from 'ol/style'
 import CircleStyle from 'ol/style/Circle'
+import { fromExtent } from 'ol/geom/Polygon'
 
 function getSelectPlus(mapData: any) {
   const clickInteraction = new Select({
@@ -76,6 +77,7 @@ export class QvMap {
   get map(): OlMap {
     return this._map
   }
+
   static addLayerBaseIndex = 30000
   static bufferBaseIndex = 10000
   static DbBaseIndex = 10000
@@ -91,6 +93,8 @@ export class QvMap {
    * @private
    */
   private diTu = new Map<ProdLayersTypeEnum, Layer>()
+  private converLayer: Layer | null = null
+
   /**
    * 文件转换图层
    * @private
@@ -149,6 +153,7 @@ export class QvMap {
   openSelectO() {
     this._map.addInteraction(getSelectPlus(this.mapData))
   }
+
   closeSelect() {
     this._map.removeInteraction(getSelectPlus(this.mapData))
   }
@@ -517,6 +522,7 @@ export class QvMap {
       this._map.removeInteraction(this.curEditorLayer.snap)
     }
   }
+
   addShanLayers(x: number, y: number, expire: number) {
     let feature = new Feature({
       geometry: new Point([x, y])
@@ -554,6 +560,7 @@ export class QvMap {
   changeStyle(e: any) {
     let layersByUid = this.getLayersByUid(e.uid)
     if (e.geo_type == 'point') {
+      // @ts-ignore
       layersByUid.setStyle(function (f) {
         let { Size, FillColor, StrokeColor, StrokeWidth } = e.style
         return new Style({
@@ -578,6 +585,7 @@ export class QvMap {
         })
       })
     } else if (e.geo_type == 'line') {
+      // @ts-ignore
       layersByUid.setStyle(function (f) {
         let { Size, FillColor, StrokeColor, StrokeWidth } = e.style
         return new Style({
@@ -597,6 +605,7 @@ export class QvMap {
         })
       })
     } else if (e.geo_type == 'polygon') {
+      // @ts-ignore
       layersByUid.setStyle(function (f) {
         let { Size, FillColor, StrokeColor, StrokeWidth } = e.style
 
@@ -619,6 +628,7 @@ export class QvMap {
         })
       })
     } else if (e.geo_type == 'collection') {
+      // @ts-ignore
       layersByUid.setStyle(function (f) {
         let tp: string = f.getGeometry().getType()
         if (tp.toLowerCase().includes('point')) {
@@ -698,6 +708,47 @@ export class QvMap {
         }
         return null
       })
+    }
+  }
+
+  addConver(gjson: string, color: string) {
+    // 遮罩图层
+    let initLayer = new VectorLayer({
+      zIndex: 3,
+      source: new VectorSource(),
+      style: new Style({
+        fill: new Fill({
+          color: color
+        }),
+        stroke: new Stroke({
+          color: '#f4b49f',
+          width: 3
+        })
+      })
+    })
+    const fts = new GeoJSON().readFeatures(gjson)
+    const ft = fts[0]
+    const converGeom = erase(ft.getGeometry())
+    const convertFt = new Feature({
+      geometry: converGeom
+    })
+    // @ts-ignore
+    initLayer.getSource().addFeature(convertFt)
+
+    function erase(geom: any) {
+      const extent = [-180, -90, 180, 90]
+      const polygonRing = fromExtent(extent)
+      const coords = geom.getCoordinates()
+      const linearRing = new LinearRing(coords)
+      polygonRing.appendLinearRing(linearRing)
+      return polygonRing
+    }
+    this.converLayer = initLayer
+    this._map.addLayer(this.converLayer)
+  }
+  removeConver() {
+    if (this.converLayer) {
+      this.map.removeLayer(this.converLayer)
     }
   }
 }

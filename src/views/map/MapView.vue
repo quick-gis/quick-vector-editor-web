@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import { QvMap } from '@/views/map/QvMap'
 import eventBus from '@/utils/eventBus'
-import { Style } from 'ol/style'
+import { Fill, Stroke, Style } from 'ol/style'
 import { Vector as VectorLayer } from 'ol/layer'
 import { Vector as VectorSource } from 'ol/source'
 import GeoJSON from 'ol/format/GeoJSON'
@@ -10,6 +10,9 @@ import { SelectedStyles } from '@/views/map/mapmapStyle'
 import { useMapCurStore } from '@/stores/mapCur'
 import { saveAs } from 'file-saver'
 import { BgAxios } from '@/utils/axiosUtils'
+import { LinearRing } from 'ol/geom'
+import { fromExtent } from 'ol/geom/Polygon'
+import { Feature } from 'ol'
 
 const map = ref<any>()
 let mapData = reactive({
@@ -170,6 +173,64 @@ const ebs = () => {
     useMapCurStore().mapCurData.field = attributeNames
   })
 
+  eventBus.on('add_conver', (e) => {
+    qvMap.addConver(e.geojson, e.color)
+  })
+  eventBus.on('remove_conver', (e) => {
+    qvMap.removeConver()
+  })
+
+  eventBus.on('exportMap', (e) => {
+    qvMap.map.once('rendercomplete', function () {
+      const mapCanvas = document.createElement('canvas')
+      const size = qvMap.map.getSize()
+      mapCanvas.width = size[0]
+      mapCanvas.height = size[1]
+      const mapContext = mapCanvas.getContext('2d')
+      Array.prototype.forEach.call(
+        qvMap.map.getViewport().querySelectorAll('.ol-layer canvas, canvas.ol-layer'),
+        function (canvas) {
+          if (canvas.width > 0) {
+            const opacity = canvas.parentNode.style.opacity || canvas.style.opacity
+            mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity)
+            let matrix
+            const transform = canvas.style.transform
+            if (transform) {
+              // Get the transform parameters from the style's transform matrix
+              matrix = transform
+                .match(/^matrix\(([^\(]*)\)$/)[1]
+                .split(',')
+                .map(Number)
+            } else {
+              matrix = [
+                parseFloat(canvas.style.width) / canvas.width,
+                0,
+                0,
+                parseFloat(canvas.style.height) / canvas.height,
+                0,
+                0
+              ]
+            }
+            // Apply the transform to the export map context
+            CanvasRenderingContext2D.prototype.setTransform.apply(mapContext, matrix)
+            const backgroundColor = canvas.parentNode.style.backgroundColor
+            if (backgroundColor) {
+              mapContext.fillStyle = backgroundColor
+              mapContext.fillRect(0, 0, canvas.width, canvas.height)
+            }
+            mapContext.drawImage(canvas, 0, 0)
+          }
+        }
+      )
+      mapContext.globalAlpha = 1
+      mapContext.setTransform(1, 0, 0, 1, 0, 0)
+      const link = document.getElementById('image-download')
+      link.href = mapCanvas.toDataURL()
+      link.click()
+    })
+    qvMap.map.renderSync()
+  })
+
   //todo: 功能还不正确（数据相关
   eventBus.on('subway', (e) => {
     let features = []
@@ -218,6 +279,7 @@ onMounted(() => {
 
 <template>
   <div id="map" ref="map" style="height: 100%; width: 100%"></div>
+  <a id="image-download" download="map.png"></a>
   <!--  <t-button @click="chuanbo">传播案例</t-button>-->
 </template>
 
