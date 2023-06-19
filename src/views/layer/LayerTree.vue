@@ -15,7 +15,7 @@
     >
       <template #label="node">
         <t-space @contextmenu="rightClick($event, node.node)">{{
-          node.node.value + '-' + node.node.label
+         node.node.label
         }}</t-space>
       </template>
     </t-tree>
