@@ -590,8 +590,8 @@ export class QvMap {
             text: f.get(e.style.fieldName),
             fill: new Fill({ color: FillColor }),
             stroke: new Stroke({ color: e.style.TextColor, width: e.style.TextOutlineColor }),
-            offsetX: 0,
-            offsetY: 0,
+            offsetX: e.style.TextOffsetX,
+            offsetY: e.style.TextOffsetY,
             rotation: (e.style.TextRotation / 180) * Math.PI
           })
         })
@@ -612,8 +612,8 @@ export class QvMap {
 
             fill: new Fill({ color: FillColor }),
             stroke: new Stroke({ color: e.style.TextColor, width: e.style.TextOutlineColor }),
-            offsetX: 0,
-            offsetY: 0,
+            offsetX: e.style.TextOffsetX,
+            offsetY: e.style.TextOffsetY,
             rotation: (e.style.TextRotation / 180) * Math.PI
           })
         })
@@ -643,8 +643,8 @@ export class QvMap {
                 color: e.style_mu.line.TextColor,
                 width: e.style_mu.line.TextOutlineColor
               }),
-              offsetX: 0,
-              offsetY: 0,
+              offsetX: e.style_mu.line.TextOffsetX,
+              offsetY: e.style_mu.line.TextOffsetY,
               rotation: (e.style_mu.line.TextRotation / 180) * Math.PI
             })
           })
@@ -666,8 +666,8 @@ export class QvMap {
                 color: e.style_mu.line.TextColor,
                 width: e.style_mu.line.TextOutlineColor
               }),
-              offsetX: 0,
-              offsetY: 0,
+              offsetX: e.style_mu.line.TextOffsetX,
+              offsetY: e.style_mu.line.TextOffsetY,
               rotation: (e.style_mu.line.TextRotation / 180) * Math.PI
             })
           })
@@ -690,8 +690,8 @@ export class QvMap {
                 color: e.style_mu.line.TextColor,
                 width: e.style_mu.line.TextOutlineColor
               }),
-              offsetX: 0,
-              offsetY: 0,
+              offsetX: e.style_mu.line.TextOffsetX,
+              offsetY: e.style_mu.line.TextOffsetY,
               rotation: (e.style_mu.line.TextRotation / 180) * Math.PI
             })
           })
