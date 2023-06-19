@@ -11,9 +11,12 @@
       value-mode="onlyLeaf"
       @change="onChange"
       @click="onClick"
+      @onActive="onActive"
     >
       <template #label="node">
-        <t-space @contextmenu="rightClick($event, node.node)">{{ node.node.label }}</t-space>
+        <t-space @contextmenu="rightClick($event, node.node)">{{
+          node.node.value + '-' + node.node.label
+        }}</t-space>
       </template>
     </t-tree>
   </t-space>
@@ -92,7 +95,7 @@ const rightClick = (e, node) => {
     contextmenuConfig.display = false
   }
 }
-import { reactive, ref } from 'vue'
+import { nextTick, reactive, ref } from 'vue'
 import { ProdLayersTypeEnum } from '@/views/map/ConstValue'
 import { difference } from '@/utils/Utils'
 import { findNodeByLabel, findNodeByValue } from '@/utils/NodeUtil'
@@ -212,9 +215,44 @@ const checkStrictly = ref(false)
 const aboutNode = reactive({
   selectNode: []
 })
-
+const onActive = (v, c) => {}
 const onClick = (context) => {
-  console.info('onClick:', context)
+  // console.info('onClick:', context)
+  // let node = context.node
+  // let tag = node.data.tag
+  //
+  // node.data.children
+  // if (node.checked) {
+  //   if (
+  //     tag == ProdLayersTypeEnum.vec_c_jwd ||
+  //     tag == ProdLayersTypeEnum.vec_jwd_label ||
+  //     tag == ProdLayersTypeEnum.vec_c_mkt ||
+  //     tag == ProdLayersTypeEnum.vec_mkt_label ||
+  //     tag == ProdLayersTypeEnum.img_c_jwd ||
+  //     tag == ProdLayersTypeEnum.img_jwd_label ||
+  //     tag == ProdLayersTypeEnum.img_c_mkt ||
+  //     tag == ProdLayersTypeEnum.img_mkt_label
+  //   ) {
+  //     closeDiTuLayer(tag)
+  //   } else {
+  //     closeVectorLayer(node.data.value)
+  //   }
+  // } else {
+  //   if (
+  //     tag == ProdLayersTypeEnum.vec_c_jwd ||
+  //     tag == ProdLayersTypeEnum.vec_jwd_label ||
+  //     tag == ProdLayersTypeEnum.vec_c_mkt ||
+  //     tag == ProdLayersTypeEnum.vec_mkt_label ||
+  //     tag == ProdLayersTypeEnum.img_c_jwd ||
+  //     tag == ProdLayersTypeEnum.img_jwd_label ||
+  //     tag == ProdLayersTypeEnum.img_c_mkt ||
+  //     tag == ProdLayersTypeEnum.img_mkt_label
+  //   ) {
+  //     openDiTuLayer(tag)
+  //   } else {
+  //     openVectorLayer(node.data.value)
+  //   }
+  // }
 }
 const defaultValue = ref([])
 eventBus.on('click-body', (e) => {
@@ -243,27 +281,29 @@ eventBus.on('gen-csv', (e) => {
   aboutNode.selectNode.unshift(e.uid)
   findNodeByLabel1.children.unshift(node)
 })
-eventBus.on('gen-buffer', (e) => {
-  // todo: 缓冲区图层
-  let findNodeByLabel1 = findNodeByLabel(data.itemsString, '缓冲区分析')
-  let n = findNodeByValue(data.itemsString, e.layerName)
+eventBus.on('gen-buffer-menu', (e) => {
+  nextTick(() => {
+    // todo: 缓冲区图层
+    let findNodeByLabel1 = findNodeByLabel(data.itemsString, '缓冲区分析')
+    let n = findNodeByValue(data.itemsString, e.layerName)
 
-  let node = {
-    value: e.id,
-    label: n.label + '-缓冲分析',
-    uid: e.id,
-    tag: ProdLayersTypeEnum.buffer,
-    geo_type: 'polygon',
-    checked: true
-  }
-  useMapCurStore().mapCurData.canEditorLayerNode.push({
-    nid: e.id,
-    name: n.label + '-缓冲分析'
+    let node = {
+      value: e.id,
+      label: n.label + '-缓冲分析',
+      uid: e.id,
+      tag: ProdLayersTypeEnum.buffer,
+      geo_type: 'polygon',
+      checked: true
+    }
+    useMapCurStore().mapCurData.canEditorLayerNode.push({
+      nid: e.id,
+      name: n.label + '-缓冲分析'
+    })
+    tree.value.appendTo(findNodeByLabel1.value, node)
+    tree.value.setItem(e.id, { checked: true })
+    aboutNode.selectNode.unshift(e.id)
+    findNodeByLabel1.children.unshift(node)
   })
-  tree.value.appendTo(findNodeByLabel1.value, node)
-  tree.value.setItem(e.id, { checked: true })
-  aboutNode.selectNode.unshift(e.layerName)
-  findNodeByLabel1.children.unshift(node)
 })
 eventBus.on('gen-mysql', (e) => {
   let findNodeByLabel1 = findNodeByLabel(data.itemsString, '数据库图层')

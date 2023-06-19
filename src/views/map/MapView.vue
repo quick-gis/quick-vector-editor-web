@@ -73,12 +73,16 @@ const ebs = () => {
   eventBus.on('closeVectorLayer', (e) => {
     console.log('closeVectorLayer', e)
     let layersByUid = qvMap.getLayersByUid(e)
-    layersByUid.setVisible(false)
+    if (layersByUid) {
+      layersByUid.setVisible(false)
+    }
   })
   eventBus.on('openVectorLayer', (e) => {
     console.log('openVectorLayer', e)
     let layersByUid = qvMap.getLayersByUid(e)
-    layersByUid.setVisible(true)
+    if (layersByUid) {
+      layersByUid.setVisible(true)
+    }
   })
 
   eventBus.on('gen-csv', (e) => {
@@ -138,6 +142,7 @@ const ebs = () => {
     console.log('缓冲区', e)
     let gjson = qvMap.GetGeojsonWithLayer(e.layerName)
     qvMap.addBufferLayer(e.id, gjson, e.size, e.unity)
+    eventBus.emit('gen-buffer-menu', e)
   })
 
   //todo: 功能还不正确（数据相关

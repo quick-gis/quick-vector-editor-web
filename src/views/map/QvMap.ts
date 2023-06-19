@@ -404,25 +404,12 @@ export class QvMap {
   }
 
   GetGeojsonWithLayer(uid: string) {
-    let layer = this._bufferLayer.get(uid)
-    if (layer) {
-      // @ts-ignore
-      let fet = layer?.getSource().getFeatures()
-      let geoJSON = geojson.writeFeatures(fet, {
-        featureProjection: 'EPSG:4326' // 指定要素的投影坐标系
-      })
-      return geoJSON
-    }
-    let layer1 = this._fileLayer.get(uid)
-    if (layer1) {
-      // @ts-ignore
-      let fet = layer1?.getSource().getFeatures()
-      let geoJSON = geojson.writeFeatures(fet, {
-        featureProjection: 'EPSG:4326' // 指定要素的投影坐标系
-      })
-      return geoJSON
-    }
-    return null
+    let layer = this.getLayersByUid(uid)
+    let fet = layer?.getSource().getFeatures()
+    let geoJSON = geojson.writeFeatures(fet, {
+      featureProjection: 'EPSG:4326' // 指定要素的投影坐标系
+    })
+    return geoJSON
   }
 
   addLineRingLayer(uid: string, json: any) {
@@ -447,6 +434,7 @@ export class QvMap {
    */
   addBufferLayer(uid: string, json: any, size: any, unity: any) {
     let geojson = buffer(JSON.parse(json), size, { units: unity })
+    console.log('uffer', geojson)
     let vectorLayer = new VectorLayer({
       source: new VectorSource({
         features: new GeoJSON().readFeatures(geojson)
