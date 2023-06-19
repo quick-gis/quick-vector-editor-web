@@ -111,6 +111,7 @@ const exportGeojson = () => {
 const exportShp = () => {
   eventBus.emit('export-shp', { uid: curNode.value.uid })
 }
+
 const data = reactive({
   itemsString: [
     {
@@ -132,6 +133,21 @@ const data = reactive({
           label: '文件图层',
           children: [],
           disabled: true
+        }
+      ]
+    },
+    {
+      value: '3',
+      label: '分析',
+      disabled: true,
+      tag: '',
+      children: [
+        {
+          value: '3-1',
+          label: '缓冲区分析',
+          disabled: true,
+          tag: '',
+          children: []
         }
       ]
     },
@@ -204,6 +220,7 @@ const defaultValue = ref([])
 eventBus.on('click-body', (e) => {
   contextmenuConfig.display = false
 })
+
 eventBus.on('gen-csv', (e) => {
   console.log(e)
   let findNodeByLabel1 = findNodeByLabel(data.itemsString, '文件图层')
@@ -226,7 +243,28 @@ eventBus.on('gen-csv', (e) => {
   aboutNode.selectNode.unshift(e.uid)
   findNodeByLabel1.children.unshift(node)
 })
+eventBus.on('gen-buffer', (e) => {
+  // todo: 缓冲区图层
+  let findNodeByLabel1 = findNodeByLabel(data.itemsString, '缓冲区分析')
+  let n = findNodeByValue(data.itemsString, e.layerName)
 
+  let node = {
+    value: e.id,
+    label: n.label + '-缓冲分析',
+    uid: e.id,
+    tag: ProdLayersTypeEnum.buffer,
+    geo_type: 'polygon',
+    checked: true
+  }
+  useMapCurStore().mapCurData.canEditorLayerNode.push({
+    nid: e.id,
+    name: n.label + '-缓冲分析'
+  })
+  tree.value.appendTo(findNodeByLabel1.value, node)
+  tree.value.setItem(e.id, { checked: true })
+  aboutNode.selectNode.unshift(e.layerName)
+  findNodeByLabel1.children.unshift(node)
+})
 eventBus.on('gen-mysql', (e) => {
   let findNodeByLabel1 = findNodeByLabel(data.itemsString, '数据库图层')
   let node = {

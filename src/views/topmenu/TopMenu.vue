@@ -43,6 +43,12 @@
           >查看高德地图地铁</t-menu-item
         >
       </t-submenu>
+      <t-submenu value="5">
+        <template #title>
+          <span>分析</span>
+        </template>
+        <t-menu-item value="5-0" @click="cnm">缓冲区分析</t-menu-item>
+      </t-submenu>
     </t-head-menu>
   </div>
 
@@ -60,10 +66,13 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from 'vue'
+import { defineAsyncComponent, onMounted, reactive, ref } from 'vue'
 import router from '@/router'
 import eventBus, { sendDialogCancel, sendDialogConfirm } from '@/utils/eventBus'
+const TestModalAsync = defineAsyncComponent(() => import('../anasys/Buffer.vue'))
 
+const cnm = () => {
+}
 const visible = reactive({
   dialog: false,
   dialog_width: '75%'

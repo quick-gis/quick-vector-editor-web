@@ -70,6 +70,14 @@ const router = createRouter({
         // @ts-ignore
         return import('../views/exp/ExportGeoJson.vue')
       }
+    },
+    {
+      path: '/buffer',
+      name: 'buffer',
+      component: () => {
+        // @ts-ignore
+        return import('../views/anasys/Buffer.vue')
+      }
     }
   ]
 })

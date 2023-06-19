@@ -134,6 +134,12 @@ const ebs = () => {
     }
   })
 
+  eventBus.on('gen-buffer', (e) => {
+    console.log('缓冲区', e)
+    let gjson = qvMap.GetGeojsonWithLayer(e.layerName)
+    qvMap.addBufferLayer(e.id, gjson, e.size, e.unity)
+  })
+
   //todo: 功能还不正确（数据相关
   eventBus.on('subway', (e) => {
     let features = []
