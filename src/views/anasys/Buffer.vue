@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, onMounted, reactive } from 'vue'
+import { inject, nextTick, onMounted, reactive, Ref, watch } from 'vue'
 import { useMapCurStore } from '@/stores/mapCur'
 import eventBus, { sendDialogConfirmHandlerOk } from '@/utils/eventBus'
 
@@ -34,7 +34,7 @@ const ok = () => {
 }
 eventBus.on('dialog_confirm', async (e) => {
   if (e.path == PATH) {
-    // data.id = uuidv4()
+    data.id = uuidv4()
     await ok()
     sendDialogConfirmHandlerOk()
   }

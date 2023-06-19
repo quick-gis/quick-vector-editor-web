@@ -47,32 +47,21 @@
         <template #title>
           <span>分析</span>
         </template>
-        <t-menu-item value="5-0" @click="cnm">缓冲区分析</t-menu-item>
+        <t-menu-item value="5-0" @click="openTianDiTuConfig('/buffer')">缓冲区分析</t-menu-item>
       </t-submenu>
     </t-head-menu>
   </div>
 
-  <div id="dialog">
-    <t-dialog
-      v-model:visible="visible.dialog"
-      :draggable="true"
-      :width="visible.dialog_width"
-      @cancel="cancel"
-      @confirm="confirm"
-    >
-      <router-view />
-    </t-dialog>
-  </div>
+  <dynamic-dialog v-model:path="pathV" v-model:model-value="visible.dialog"></dynamic-dialog>
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, onMounted, reactive, ref } from 'vue'
+import { defineAsyncComponent, onMounted, provide, reactive, ref } from 'vue'
 import router from '@/router'
 import eventBus, { sendDialogCancel, sendDialogConfirm } from '@/utils/eventBus'
-const TestModalAsync = defineAsyncComponent(() => import('../anasys/Buffer.vue'))
+import DynamicDialog from '@/views/common/DynamicDialog.vue'
 
-const cnm = () => {
-}
+const cnm = () => {}
 const visible = reactive({
   dialog: false,
   dialog_width: '75%'
