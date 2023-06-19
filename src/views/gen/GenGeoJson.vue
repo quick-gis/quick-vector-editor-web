@@ -21,7 +21,8 @@ onMounted(() => {
       eventBus.emit('gen-geojson', {
         uid: uuidv4(),
         name: data.files[0].name,
-        geojson: data.geojson
+        geojson: data.geojson,
+        geo_type: 'collection'
       })
       sendDialogConfirmHandlerOk()
     }

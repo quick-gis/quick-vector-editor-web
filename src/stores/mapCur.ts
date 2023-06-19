@@ -10,7 +10,8 @@ export const useMapCurStore = defineStore('map_cur', () => {
     module: 'ordinary',
     canEditorLayerNode: [],
     curEditorLayerNid: '',
-    exportLayer: ''
+    exportLayer: '',
+    field: []
   })
 
   return { mapCurData }

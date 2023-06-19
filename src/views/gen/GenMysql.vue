@@ -14,7 +14,7 @@ onMounted(() => {
         eventBus.emit('gen-mysql', {
           geojsons: data.geojsonCollections,
           name: data.linkConfig.table,
-          gro_type: data.type,
+          geo_type: data.type,
           uid: uuidv4()
         })
       })

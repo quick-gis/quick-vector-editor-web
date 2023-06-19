@@ -78,6 +78,14 @@ const router = createRouter({
         // @ts-ignore
         return import('../views/anasys/Buffer.vue')
       }
+    },
+    {
+      path: '/style',
+      name: 'style',
+      component: () => {
+        // @ts-ignore
+        return import('../views/label/LabelViewLine.vue')
+      }
     }
   ]
 })

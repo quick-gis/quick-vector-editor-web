@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import Buffer from '@/views/anasys/Buffer.vue'
-import { provide, reactive, ref } from 'vue'
+import { onMounted, provide, reactive, ref } from 'vue'
 import ExportGeoJson from '@/views/exp/ExportGeoJson.vue'
 import GenCsv from '@/views/gen/GenCsv.vue'
 import GenMysql from '@/views/gen/GenMysql.vue'
@@ -9,6 +9,9 @@ import TianDiTuToken from '@/views/token/TianDiTuToken.vue'
 import MoveToXY from '@/views/tools/move_xy/MoveToXY.vue'
 import GaoDeSubway from '@/views/dataview/GaoDeSubway.vue'
 import eventBus from '@/utils/eventBus'
+import LabelViewLine from '@/views/label/LabelViewLine.vue'
+import LabelViewPoint from '@/views/label/LabelViewPoint.vue'
+import LabelViewPolygon from '@/views/label/LabelViewPolygon.vue'
 
 const visible = reactive({
   dialog: false,
@@ -36,6 +39,9 @@ const confirm = () => {
 }
 const okFlag = ref(false)
 provide('ok', okFlag)
+onMounted(() => {
+  console.log('?a')
+})
 </script>
 
 <template>
@@ -55,6 +61,9 @@ provide('ok', okFlag)
     <tian-di-tu-token v-if="props.path == '/tdt_config'"></tian-di-tu-token>
     <move-to-x-y v-if="props.path == '/move_xy'"></move-to-x-y>
     <gao-de-subway v-if="props.path == '/subway'"></gao-de-subway>
+    <label-view-line v-if="props.path == '/style_line'"></label-view-line>
+    <label-view-point v-if="props.path == '/style_point'"></label-view-point>
+    <label-view-polygon v-if="props.path == '/style_polygon'"></label-view-polygon>
   </t-dialog>
 </template>
 

@@ -34,6 +34,7 @@ function exportGeojson(e) {
   let strData = new Blob([str], { type: 'text/plain;charset=utf-8' })
   saveAs(strData, 'export.json')
 }
+
 function exportShp(e) {
   let str = qvMap.GetGeojsonWithLayer(e.uid)
   BgAxios()
@@ -143,6 +144,30 @@ const ebs = () => {
     let gjson = qvMap.GetGeojsonWithLayer(e.layerName)
     qvMap.addBufferLayer(e.id, gjson, e.size, e.unity)
     eventBus.emit('gen-buffer-menu', e)
+  })
+
+  eventBus.on('change-style', (e) => {
+    qvMap.changeStyle(e)
+  })
+
+  eventBus.on('get_fields', (e) => {
+    let layersByUid = qvMap.getLayersByUid(e.uid)
+    var attributeNames = []
+    if (layersByUid.getSource().getFeatures()) {
+      layersByUid
+        .getSource()
+        .getFeatures()
+        .forEach(function (feature) {
+          var properties = feature.getProperties()
+          var keys = Object.keys(properties)
+          keys.forEach(function (key) {
+            if (!attributeNames.includes(key)) {
+              attributeNames.push(key)
+            }
+          })
+        })
+    }
+    useMapCurStore().mapCurData.field = attributeNames
   })
 
   //todo: 功能还不正确（数据相关

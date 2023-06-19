@@ -14,9 +14,7 @@
       @onActive="onActive"
     >
       <template #label="node">
-        <t-space @contextmenu="rightClick($event, node.node)">{{
-         node.node.label
-        }}</t-space>
+        <t-space @contextmenu="rightClick($event, node.node)">{{ node.node.label }}</t-space>
       </template>
     </t-tree>
   </t-space>
@@ -31,15 +29,15 @@
   >
     <t-space class="tdesign-demo-dropdown">
       <t-menu
-        theme="light"
         expand-type="popup"
+        height="550px"
         style="
           margin-right: 40px;
 
           border: 1px solid #999999;
           background-color: #f4f4f4;
         "
-        height="550px"
+        theme="light"
       >
         <t-submenu
           v-if="
@@ -50,20 +48,45 @@
             curNode.tag == ProdLayersTypeEnum.line_self_ov ||
             curNode.tag == ProdLayersTypeEnum.point_repeat
           "
-          value="3-1"
           title="数据"
+          value="3-1"
         >
-          <t-menu-item value="3-1-1" @click="exportShp">导出 Shp </t-menu-item>
-          <t-menu-item value="3-1-2" @click="exportGeojson">导出 GeoJson </t-menu-item>
+          <t-menu-item value="3-1-1" @click="exportShp">导出 Shp</t-menu-item>
+          <t-menu-item value="3-1-2" @click="exportGeojson">导出 GeoJson</t-menu-item>
         </t-submenu>
+        <t-menu-item title="样式" value="4-1" @click="changeLabel">样式</t-menu-item>
       </t-menu>
     </t-space>
   </div>
+
+  <Label
+    v-model:model-value="visible.dialog"
+    v-model:path="pathV"
+    v-model:uid="visible.uid"
+  ></Label>
 </template>
 
 <script setup>
-import { ChevronDownIcon } from 'tdesign-icons-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'
+import { nextTick, reactive, ref } from 'vue'
+import { ProdLayersTypeEnum } from '@/views/map/ConstValue'
+import { difference } from '@/utils/Utils'
+import { findNodeByLabel, findNodeByValue } from '@/utils/NodeUtil'
+import eventBus, {
+  closeDiTuLayer,
+  closeVectorLayer,
+  openDiTuLayer,
+  openVectorLayer
+} from '@/utils/eventBus'
+import { useMapCurStore } from '@/stores/mapCur'
+import Label from '@/views/label/Label.vue'
+
+const visible = reactive({
+  dialog: false,
+  dialog_width: '75%',
+  uid: ''
+})
+const pathV = ref()
 
 const curNode = ref()
 const clickHandler = (data) => {
@@ -95,21 +118,30 @@ const rightClick = (e, node) => {
     contextmenuConfig.display = false
   }
 }
-import { nextTick, reactive, ref } from 'vue'
-import { ProdLayersTypeEnum } from '@/views/map/ConstValue'
-import { difference } from '@/utils/Utils'
-import { findNodeByLabel, findNodeByValue } from '@/utils/NodeUtil'
-import eventBus, {
-  closeDiTuLayer,
-  closeVectorLayer,
-  openDiTuLayer,
-  openVectorLayer
-} from '@/utils/eventBus'
-import { useMapCurStore } from '@/stores/mapCur'
 
 const tree = ref()
 const exportGeojson = () => {
   eventBus.emit('export-geojson', { uid: curNode.value.uid })
+}
+
+const changeLabel = () => {
+  visible.uid = curNode.value.uid
+
+  eventBus.emit('get_fields', { uid: curNode.value.uid })
+
+  if (curNode.value.geo_type.toLowerCase() == 'point'.toLowerCase()) {
+    pathV.value = '/style_point'
+    visible.dialog = true
+  } else if (curNode.value.geo_type.toLowerCase() == 'line'.toLowerCase()) {
+    pathV.value = '/style_line'
+    visible.dialog = true
+  } else if (curNode.value.geo_type.toLowerCase() == 'polygon'.toLowerCase()) {
+    pathV.value = '/style_polygon'
+    visible.dialog = true
+  } else if (curNode.value.geo_type.toLowerCase() == 'collection'.toLowerCase()) {
+    pathV.value = '/style_collection'
+    visible.dialog = true
+  }
 }
 const exportShp = () => {
   eventBus.emit('export-shp', { uid: curNode.value.uid })
@@ -216,44 +248,7 @@ const aboutNode = reactive({
   selectNode: []
 })
 const onActive = (v, c) => {}
-const onClick = (context) => {
-  // console.info('onClick:', context)
-  // let node = context.node
-  // let tag = node.data.tag
-  //
-  // node.data.children
-  // if (node.checked) {
-  //   if (
-  //     tag == ProdLayersTypeEnum.vec_c_jwd ||
-  //     tag == ProdLayersTypeEnum.vec_jwd_label ||
-  //     tag == ProdLayersTypeEnum.vec_c_mkt ||
-  //     tag == ProdLayersTypeEnum.vec_mkt_label ||
-  //     tag == ProdLayersTypeEnum.img_c_jwd ||
-  //     tag == ProdLayersTypeEnum.img_jwd_label ||
-  //     tag == ProdLayersTypeEnum.img_c_mkt ||
-  //     tag == ProdLayersTypeEnum.img_mkt_label
-  //   ) {
-  //     closeDiTuLayer(tag)
-  //   } else {
-  //     closeVectorLayer(node.data.value)
-  //   }
-  // } else {
-  //   if (
-  //     tag == ProdLayersTypeEnum.vec_c_jwd ||
-  //     tag == ProdLayersTypeEnum.vec_jwd_label ||
-  //     tag == ProdLayersTypeEnum.vec_c_mkt ||
-  //     tag == ProdLayersTypeEnum.vec_mkt_label ||
-  //     tag == ProdLayersTypeEnum.img_c_jwd ||
-  //     tag == ProdLayersTypeEnum.img_jwd_label ||
-  //     tag == ProdLayersTypeEnum.img_c_mkt ||
-  //     tag == ProdLayersTypeEnum.img_mkt_label
-  //   ) {
-  //     openDiTuLayer(tag)
-  //   } else {
-  //     openVectorLayer(node.data.value)
-  //   }
-  // }
-}
+const onClick = (context) => {}
 const defaultValue = ref([])
 eventBus.on('click-body', (e) => {
   contextmenuConfig.display = false
@@ -312,8 +307,7 @@ eventBus.on('gen-mysql', (e) => {
     label: e.name,
     uid: e.uid,
     tag: ProdLayersTypeEnum.sql,
-    geo_type: e.geo_type,
-    checked: true
+    geo_type: e.geo_type
   }
   useMapCurStore().mapCurData.canEditorLayerNode.push({
     nid: e.uid,

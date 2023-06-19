@@ -16,7 +16,8 @@ import { buffer } from '@turf/turf'
 import { useMapCurStore } from '@/stores/mapCur'
 import eventBus from '@/utils/eventBus'
 import { Point } from 'ol/geom'
-import { Circle, Stroke, Style } from 'ol/style'
+import { Circle, Fill, Stroke, Style, Text } from 'ol/style'
+import CircleStyle from 'ol/style/Circle'
 
 function getSelectPlus(mapData: any) {
   const clickInteraction = new Select({
@@ -405,11 +406,11 @@ export class QvMap {
 
   GetGeojsonWithLayer(uid: string) {
     let layer = this.getLayersByUid(uid)
+    // @ts-ignore
     let fet = layer?.getSource().getFeatures()
-    let geoJSON = geojson.writeFeatures(fet, {
+    return geojson.writeFeatures(fet, {
       featureProjection: 'EPSG:4326' // 指定要素的投影坐标系
     })
-    return geoJSON
   }
 
   addLineRingLayer(uid: string, json: any) {
@@ -548,6 +549,156 @@ export class QvMap {
     setTimeout(() => {
       this._map.removeLayer(vectorLayer)
     }, expire)
+  }
+
+  changeStyle(e: any) {
+    let layersByUid = this.getLayersByUid(e.uid)
+    if (e.geo_type == 'point') {
+      layersByUid.setStyle(function (f) {
+        let { Size, FillColor, StrokeColor, StrokeWidth } = e.style
+        return new Style({
+          image: new CircleStyle({
+            radius: Size,
+            fill: new Fill({ color: FillColor }),
+            stroke: new Stroke({ color: StrokeColor, width: StrokeWidth })
+          }),
+
+          text: new Text({
+            textAlign: e.style.TextAglin,
+            textBaseline: e.style.TextBaseline,
+            font: `${e.style.TextWeight} ${e.style.TextSize}px ${e.style.TextFont}`,
+            text: f.get(e.style.fieldName),
+
+            fill: new Fill({ color: FillColor }),
+            stroke: new Stroke({ color: e.style.TextColor, width: e.style.TextOutlineColor }),
+            offsetX: 0,
+            offsetY: 0,
+            rotation: (e.style.TextRotation / 180) * Math.PI
+          })
+        })
+      })
+    } else if (e.geo_type == 'line') {
+      layersByUid.setStyle(function (f) {
+        let { Size, FillColor, StrokeColor, StrokeWidth } = e.style
+        return new Style({
+          stroke: new Stroke({ color: StrokeColor, width: StrokeWidth }),
+
+          text: new Text({
+            textAlign: e.style.TextAglin,
+            textBaseline: e.style.TextBaseline,
+            font: `${e.style.TextWeight} ${e.style.TextSize}px ${e.style.TextFont}`,
+            text: f.get(e.style.fieldName),
+            fill: new Fill({ color: FillColor }),
+            stroke: new Stroke({ color: e.style.TextColor, width: e.style.TextOutlineColor }),
+            offsetX: 0,
+            offsetY: 0,
+            rotation: (e.style.TextRotation / 180) * Math.PI
+          })
+        })
+      })
+    } else if (e.geo_type == 'polygon') {
+      layersByUid.setStyle(function (f) {
+        let { Size, FillColor, StrokeColor, StrokeWidth } = e.style
+
+        return new Style({
+          fill: new Fill({ color: FillColor }),
+          stroke: new Stroke({ color: StrokeColor, width: StrokeWidth }),
+
+          text: new Text({
+            textAlign: e.style.TextAglin,
+            textBaseline: e.style.TextBaseline,
+            font: `${e.style.TextWeight} ${e.style.TextSize}px ${e.style.TextFont}`,
+            text: f.get(e.style.fieldName),
+
+            fill: new Fill({ color: FillColor }),
+            stroke: new Stroke({ color: e.style.TextColor, width: e.style.TextOutlineColor }),
+            offsetX: 0,
+            offsetY: 0,
+            rotation: (e.style.TextRotation / 180) * Math.PI
+          })
+        })
+      })
+    } else if (e.geo_type == 'collection') {
+      layersByUid.setStyle(function (f) {
+        let tp: string = f.getGeometry().getType()
+        if (tp.toLowerCase().includes('point')) {
+          return new Style({
+            image: new CircleStyle({
+              radius: e.style_mu.point.Size,
+              fill: new Fill({ color: e.style_mu.point.FillColor }),
+              stroke: new Stroke({
+                color: e.style_mu.point.StrokeColor,
+                width: e.style_mu.point.StrokeWidth
+              })
+            }),
+
+            text: new Text({
+              textAlign: e.style_mu.line.TextAglin,
+              textBaseline: e.style_mu.line.TextBaseline,
+              font: `${e.style_mu.line.TextWeight} ${e.style_mu.line.TextSize}px ${e.style_mu.line.TextFont}`,
+              text: f.get(e.style_mu.line.fieldName),
+
+              fill: new Fill({ color: e.style_mu.line.FillColor }),
+              stroke: new Stroke({
+                color: e.style_mu.line.TextColor,
+                width: e.style_mu.line.TextOutlineColor
+              }),
+              offsetX: 0,
+              offsetY: 0,
+              rotation: (e.style_mu.line.TextRotation / 180) * Math.PI
+            })
+          })
+        } else if (tp.toLowerCase().includes('line')) {
+          return new Style({
+            stroke: new Stroke({
+              color: e.style_mu.line.StrokeColor,
+              width: e.style_mu.line.StrokeWidth
+            }),
+
+            text: new Text({
+              textAlign: e.style_mu.line.TextAglin,
+              textBaseline: e.style_mu.line.TextBaseline,
+              font: `${e.style_mu.line.TextWeight} ${e.style_mu.line.TextSize}px ${e.style_mu.line.TextFont}`,
+              text: f.get(e.style_mu.line.fieldName),
+
+              fill: new Fill({ color: e.style_mu.line.FillColor }),
+              stroke: new Stroke({
+                color: e.style_mu.line.TextColor,
+                width: e.style_mu.line.TextOutlineColor
+              }),
+              offsetX: 0,
+              offsetY: 0,
+              rotation: (e.style_mu.line.TextRotation / 180) * Math.PI
+            })
+          })
+        } else if (tp.toLowerCase().includes('polygon')) {
+          return new Style({
+            fill: new Fill({ color: e.style_mu.polygon.FillColor }),
+            stroke: new Stroke({
+              color: e.style_mu.polygon.StrokeColor,
+              width: e.style_mu.polygon.StrokeWidth
+            }),
+
+            text: new Text({
+              textAlign: e.style_mu.line.TextAglin,
+              textBaseline: e.style_mu.line.TextBaseline,
+              font: `${e.style_mu.line.TextWeight} ${e.style_mu.line.TextSize}px ${e.style_mu.line.TextFont}`,
+              text: f.get(e.style_mu.line.fieldName),
+
+              fill: new Fill({ color: e.style_mu.line.FillColor }),
+              stroke: new Stroke({
+                color: e.style_mu.line.TextColor,
+                width: e.style_mu.line.TextOutlineColor
+              }),
+              offsetX: 0,
+              offsetY: 0,
+              rotation: (e.style_mu.line.TextRotation / 180) * Math.PI
+            })
+          })
+        }
+        return null
+      })
+    }
   }
 }
 

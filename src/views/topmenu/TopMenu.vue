@@ -17,8 +17,8 @@
         </t-submenu>
         <t-submenu title="数据" value="1-2">
           <t-menu-item value="1-2-1" @click="openTianDiTuConfig('/expgeojson')">
-            导出 GeoJson</t-menu-item
-          >
+            导出 GeoJson
+          </t-menu-item>
         </t-submenu>
       </t-submenu>
       <t-submenu value="2">
@@ -40,8 +40,8 @@
           <span>外部数据获取</span>
         </template>
         <t-menu-item value="4-0" @click="openTianDiTuConfig('/subway')"
-          >查看高德地图地铁</t-menu-item
-        >
+          >查看高德地图地铁
+        </t-menu-item>
       </t-submenu>
       <t-submenu value="5">
         <template #title>
@@ -49,14 +49,23 @@
         </template>
         <t-menu-item value="5-0" @click="openTianDiTuConfig('/buffer')">缓冲区分析</t-menu-item>
       </t-submenu>
+
+      <!--      <t-submenu value='测试'>-->
+      <!--        <template #title>-->
+      <!--          <span>测试</span>-->
+      <!--        </template>-->
+      <!--        <t-menu-item value='6&#45;&#45;0' @click="openTianDiTuConfig('/style_point')">点标注</t-menu-item>-->
+      <!--        <t-menu-item value='6-1' @click="openTianDiTuConfig('/style_line')">线标注</t-menu-item>-->
+      <!--        <t-menu-item value='6-2' @click="openTianDiTuConfig('/style_polygon')">面标注</t-menu-item>-->
+      <!--      </t-submenu>-->
     </t-head-menu>
   </div>
 
-  <dynamic-dialog v-model:path="pathV" v-model:model-value="visible.dialog"></dynamic-dialog>
+  <dynamic-dialog v-model:model-value="visible.dialog" v-model:path="pathV"></dynamic-dialog>
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, onMounted, provide, reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import router from '@/router'
 import eventBus, { sendDialogCancel, sendDialogConfirm } from '@/utils/eventBus'
 import DynamicDialog from '@/views/common/DynamicDialog.vue'
