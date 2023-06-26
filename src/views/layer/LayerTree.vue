@@ -268,7 +268,8 @@ eventBus.on('gen-csv', (e) => {
   }
   useMapCurStore().mapCurData.canEditorLayerNode.push({
     nid: e.uid,
-    name: e.fileName
+    name: e.fileName,
+    geo_type: e.geo_type
   })
 
   tree.value.appendTo(findNodeByLabel1.value, node)
@@ -292,7 +293,8 @@ eventBus.on('gen-buffer-menu', (e) => {
     }
     useMapCurStore().mapCurData.canEditorLayerNode.push({
       nid: e.id,
-      name: n.label + '-缓冲分析'
+      name: n.label + '-缓冲分析',
+      geo_type: 'polygon'
     })
     tree.value.appendTo(findNodeByLabel1.value, node)
     tree.value.setItem(e.id, { checked: true })
@@ -311,7 +313,8 @@ eventBus.on('gen-mysql', (e) => {
   }
   useMapCurStore().mapCurData.canEditorLayerNode.push({
     nid: e.uid,
-    name: e.name
+    name: e.name,
+    geo_type: e.geo_type
   })
   tree.value.appendTo(findNodeByLabel1.value, node)
   tree.value.setItem(e.uid, { checked: true })
@@ -333,7 +336,8 @@ eventBus.on('gen-geojson', (e) => {
   }
   useMapCurStore().mapCurData.canEditorLayerNode.push({
     nid: e.uid,
-    name: e.name
+    name: e.name,
+    geo_type: e.geo_type
   })
 
   tree.value.appendTo(findNodeByLabel1.value, node)

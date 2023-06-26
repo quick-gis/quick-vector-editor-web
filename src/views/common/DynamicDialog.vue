@@ -13,6 +13,10 @@ import LabelViewLine from '@/views/label/LabelViewLine.vue'
 import LabelViewPoint from '@/views/label/LabelViewPoint.vue'
 import LabelViewPolygon from '@/views/label/LabelViewPolygon.vue'
 import GenConver from '@/views/gen/GenConver.vue'
+import IsolationPoint from '@/views/anasys/point/IsolationPoint.vue'
+import PointOverride from '@/views/anasys/point/PointOverride.vue'
+import LineCoverage from '@/views/anasys/line/LineCoverage.vue'
+import RingAnalysis from '@/views/anasys/line/RingAnalysis.vue'
 
 const visible = reactive({
   dialog: false,
@@ -66,6 +70,11 @@ onMounted(() => {
     <label-view-point v-if="props.path == '/style_point'"></label-view-point>
     <label-view-polygon v-if="props.path == '/style_polygon'"></label-view-polygon>
     <gen-conver v-if="props.path == '/add_conver'"></gen-conver>
+
+    <IsolationPoint v-if="props.path == '/isolation_point'" />
+    <PointOverride v-if="props.path == '/PointOverride'" />
+    <LineCoverage v-if="props.path == '/LineCoverage'" />
+    <RingAnalysis v-if="props.path == '/RingAnalysis'" />
   </t-dialog>
 </template>
 

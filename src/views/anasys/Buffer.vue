@@ -44,7 +44,6 @@ eventBus.on('dialog_confirm', async (e) => {
 <template>
   <div>缓冲区分析</div>
 
-  <div>{{ data }}</div>
   <t-form :model="data" label-width="120px">
     <t-form-item label="缓冲图层" prop="layerName">
       <t-select auto-width v-model="data.layerName">

@@ -5,7 +5,8 @@ import { v4 as uuidv4 } from 'uuid'
 
 const data = reactive({
   files: [],
-  geojson: ''
+  geojson: '',
+  type: 'collection'
 })
 const requestMethod = (file) => {
   return new Promise((resolve) => {
@@ -22,7 +23,7 @@ onMounted(() => {
         uid: uuidv4(),
         name: data.files[0].name,
         geojson: data.geojson,
-        geo_type: 'collection'
+        geo_type: data.type
       })
       sendDialogConfirmHandlerOk()
     }
@@ -52,6 +53,14 @@ const first = (file) => {
     style="width: 100%"
     theme="file-input"
   />
+  <t-form-item label="成图类型">
+    <t-select v-model="data.type" placeholder="请选择成图类型">
+      <t-option label="点" value="point" />
+      <t-option label="线" value="line" />
+      <t-option label="面" value="polygon" />
+      <t-option label="集合" value="collection" />
+    </t-select>
+  </t-form-item>
 </template>
 
 <style scoped></style>

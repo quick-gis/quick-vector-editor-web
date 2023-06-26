@@ -14,5 +14,10 @@ export const useMapCurStore = defineStore('map_cur', () => {
     field: []
   })
 
-  return { mapCurData }
+  const canEditorLayerNodeComputed = computed(() => {
+    return mapCurData.canEditorLayerNode.filter(
+      (col) => col.geo_type && col.geo_type?.toLowerCase() == 'point'.toLowerCase()
+    )
+  })
+  return { mapCurData, canEditorLayerNodeComputed }
 })
