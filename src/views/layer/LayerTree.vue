@@ -275,7 +275,7 @@ eventBus.on('click-body', (e) => {
   contextmenuConfig.display = false;
 });
 
-eventBus.on('line-self-overlaps-tree', (e) => {
+eventBus.on('line-ring-tree', (e) => {
   let findNodeByLabel1 = findNodeByLabel(data.itemsString, '环分析');
   let fn = findNodeByValue(data.itemsString, e.old).label + '-环分析';
   let node = {
@@ -297,7 +297,7 @@ eventBus.on('line-self-overlaps-tree', (e) => {
   aboutNode.selectNode.unshift(e.uid);
   findNodeByLabel1.children.unshift(node);
 });
-eventBus.on('line-ring-tree', (e) => {
+eventBus.on('line-self-overlaps-tree', (e) => {
   let findNodeByLabel1 = findNodeByLabel(data.itemsString, '线重复分析');
   let fn = findNodeByValue(data.itemsString, e.old).label + '-线重复分析';
   let node = {
