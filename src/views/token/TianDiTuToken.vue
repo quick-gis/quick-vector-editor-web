@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { onMounted, reactive } from 'vue'
-import eventBus, { sendDialogConfirmHandlerOk } from '@/utils/eventBus'
-import { useMapTokenStore } from '@/stores/mapToken'
-const PATH = '/tdt_config'
+import { onMounted, reactive } from 'vue';
+import eventBus, { sendDialogConfirmHandlerOk } from '@/utils/eventBus';
+import { useMapTokenStore } from '@/stores/mapToken';
+const PATH = '/tdt_config';
 
 onMounted(() => {
   eventBus.on('dialog_confirm', (e) => {
     if (e.path == PATH) {
-      useMapTokenStore().mapTokenData.tdt = data.token
-      sendDialogConfirmHandlerOk()
+      useMapTokenStore().mapTokenData.tdt = data.token;
+      sendDialogConfirmHandlerOk();
     }
-  })
-})
+  });
+});
 const data = reactive({
   token: useMapTokenStore().mapTokenData.tdt
-})
+});
 </script>
 
 <template>

@@ -75,25 +75,25 @@
   </t-tabs>
 </template>
 <script lang="ts" setup>
-import { nextTick, reactive, ref } from 'vue'
-import eventBus, { sendDialogConfirmHandlerOk } from '@/utils/eventBus'
-import { useMapCurStore } from '@/stores/mapCur'
+import { nextTick, reactive, ref } from 'vue';
+import eventBus, { sendDialogConfirmHandlerOk } from '@/utils/eventBus';
+import { useMapCurStore } from '@/stores/mapCur';
 
-const PATH = '/style_point'
+const PATH = '/style_point';
 eventBus.on('dialog_confirm', (e) => {
   if (e.path == PATH) {
-    console.log(point)
-    console.log(e)
+    console.log(point);
+    console.log(e);
     nextTick(() => {
       eventBus.emit('change-style', {
         uid: e.uid,
         style: point,
         geo_type: 'point'
-      })
-    })
-    sendDialogConfirmHandlerOk()
+      });
+    });
+    sendDialogConfirmHandlerOk();
   }
-})
+});
 
 const polygon = reactive({
   //图形样式
@@ -111,7 +111,7 @@ const polygon = reactive({
   TextOffsetY: '0',
   TextColor: '#0ff',
   TextOutlineColor: '3'
-})
+});
 //点
 const point = reactive({
   //图形样式
@@ -131,7 +131,7 @@ const point = reactive({
   TextOffsetY: '0',
   TextColor: '#0ff',
   TextOutlineColor: '3'
-})
+});
 //线
 const line = reactive({
   //图形样式
@@ -148,16 +148,16 @@ const line = reactive({
   TextOffsetY: '0',
   TextColor: '#0ff',
   TextOutlineColor: '3'
-})
-const form = ref()
-const TextWeightArray = ['normal', 'bold', 'bolder']
-const pointTextFontArray = ['Arial', 'Courier New', 'Verdana']
-const TextAglinArray = ['center', 'end', 'left', 'right', 'start']
-const TextBaselineArray = ['alphabetic', 'bottom', 'hanging', 'ideographic', 'middle', 'top']
+});
+const form = ref();
+const TextWeightArray = ['normal', 'bold', 'bolder'];
+const pointTextFontArray = ['Arial', 'Courier New', 'Verdana'];
+const TextAglinArray = ['center', 'end', 'left', 'right', 'start'];
+const TextBaselineArray = ['alphabetic', 'bottom', 'hanging', 'ideographic', 'middle', 'top'];
 
-const activePoint = 'first_Point'
-const activeLine = 'first_Line'
-const activePolygon = 'first_Polygon'
+const activePoint = 'first_Point';
+const activeLine = 'first_Line';
+const activePolygon = 'first_Polygon';
 </script>
 <style scoped>
 .featruesStyle_BOX {

@@ -33,11 +33,11 @@ export default {
         arr.push({
           id: i,
           x: d[i][0],
-          y: d[i][1],
+          y: d[i][1]
         });
       }
       return arr;
-    },
+    }
   },
   methods: {
     getCoordinates(geometry) {
@@ -52,20 +52,20 @@ export default {
         });
       }
       return coordinates;
-    },
+    }
   },
 
   props: {
-    geometry: Object,
+    geometry: Object
   },
   data() {
     return {
       feature: {
         properties: {},
-        geometry: {},
-      },
+        geometry: {}
+      }
     };
-  },
+  }
 };
 </script>
 <style></style>

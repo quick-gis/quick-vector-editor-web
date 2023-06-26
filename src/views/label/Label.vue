@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import LabelViewPolygon from '@/views/label/LabelViewPolygon.vue'
-import LabelViewLine from '@/views/label/LabelViewLine.vue'
-import LabelViewPoint from '@/views/label/LabelViewPoint.vue'
-import eventBus from '@/utils/eventBus'
-import { provide, reactive, ref } from 'vue'
-import LableMu from '@/views/label/LableMu.vue'
+import LabelViewPolygon from '@/views/label/LabelViewPolygon.vue';
+import LabelViewLine from '@/views/label/LabelViewLine.vue';
+import LabelViewPoint from '@/views/label/LabelViewPoint.vue';
+import eventBus from '@/utils/eventBus';
+import { provide, reactive, ref } from 'vue';
+import LableMu from '@/views/label/LableMu.vue';
 
 const props = defineProps({
   modelValue: {
@@ -16,26 +16,26 @@ const props = defineProps({
   uid: {
     type: String
   }
-})
-const emit = defineEmits(['update:modelValue'])
+});
+const emit = defineEmits(['update:modelValue']);
 
 const cancel = () => {
-  console.log('取消')
-  emit('update:modelValue', false)
-}
+  console.log('取消');
+  emit('update:modelValue', false);
+};
 const confirm = () => {
-  console.log('确定')
-  okFlag.value = true
-  eventBus.emit('dialog_confirm', { path: props.path, uid: props.uid })
-  emit('update:modelValue', false)
-}
+  console.log('确定');
+  okFlag.value = true;
+  eventBus.emit('dialog_confirm', { path: props.path, uid: props.uid });
+  emit('update:modelValue', false);
+};
 
 const visible = reactive({
   dialog: false,
   dialog_width: '75%'
-})
-const okFlag = ref(false)
-provide('ok', okFlag)
+});
+const okFlag = ref(false);
+provide('ok', okFlag);
 </script>
 
 <template>

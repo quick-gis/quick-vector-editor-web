@@ -1,26 +1,26 @@
 // @ts-ignore
-import mitt from 'mitt'
-import { ProdLayersTypeEnum } from '@/views/map/ConstValue'
+import mitt from 'mitt';
+import { ProdLayersTypeEnum } from '@/views/map/ConstValue';
 
 /**
  * 传递对话框的确定按钮点击的事件
  */
 export function sendDialogConfirm(path: string) {
-  emitter.emit('dialog_confirm', { path: path })
+  emitter.emit('dialog_confirm', { path: path });
 }
 
 /**
  * 传递对话框确定按钮点击后处理完成的事件
  */
 export function sendDialogConfirmHandlerOk() {
-  emitter.emit('dialog_confirm_handler_ok')
+  emitter.emit('dialog_confirm_handler_ok');
 }
 
 /**
  * 传递对话框的取消按钮点击的事件
  */
 export function sendDialogCancel() {
-  emitter.emit('dialog_cancel')
+  emitter.emit('dialog_cancel');
 }
 
 /**
@@ -28,7 +28,7 @@ export function sendDialogCancel() {
  * @param plt
  */
 export function closeDiTuLayer(plt: ProdLayersTypeEnum) {
-  emitter.emit('closeDiTuLayer', plt)
+  emitter.emit('closeDiTuLayer', plt);
 }
 
 /**
@@ -36,7 +36,7 @@ export function closeDiTuLayer(plt: ProdLayersTypeEnum) {
  * @param plt
  */
 export function openDiTuLayer(plt: ProdLayersTypeEnum) {
-  emitter.emit('openDiTuLayer', plt)
+  emitter.emit('openDiTuLayer', plt);
 }
 
 /**
@@ -44,15 +44,15 @@ export function openDiTuLayer(plt: ProdLayersTypeEnum) {
  * @param value
  */
 export function closeVectorLayer(value: string) {
-  emitter.emit('closeVectorLayer', value)
+  emitter.emit('closeVectorLayer', value);
 }
 /**
  * 矢量图开启事件
  * @param value
  */
 export function openVectorLayer(value: string) {
-  emitter.emit('openVectorLayer', value)
+  emitter.emit('openVectorLayer', value);
 }
 
-let emitter = mitt()
-export default emitter
+let emitter = mitt();
+export default emitter;

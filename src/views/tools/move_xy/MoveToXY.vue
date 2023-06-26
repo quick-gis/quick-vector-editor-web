@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { onMounted, reactive } from 'vue'
-import eventBus, { sendDialogConfirmHandlerOk } from '@/utils/eventBus'
-const PATH = '/move_xy'
+import { onMounted, reactive } from 'vue';
+import eventBus, { sendDialogConfirmHandlerOk } from '@/utils/eventBus';
+const PATH = '/move_xy';
 
 const data = reactive({
   x: 120,
   y: 30
-})
+});
 
 onMounted(() => {
   eventBus.on('dialog_confirm', (e) => {
@@ -14,12 +14,12 @@ onMounted(() => {
       eventBus.emit('positioning', {
         x: data.x,
         y: data.y
-      })
+      });
 
-      sendDialogConfirmHandlerOk()
+      sendDialogConfirmHandlerOk();
     }
-  })
-})
+  });
+});
 </script>
 
 <template>

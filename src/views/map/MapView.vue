@@ -1,20 +1,27 @@
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from 'vue'
-import { QvMap } from '@/views/map/QvMap'
-import eventBus from '@/utils/eventBus'
-import { Fill, Stroke, Style } from 'ol/style'
-import { Vector as VectorLayer } from 'ol/layer'
-import { Vector as VectorSource } from 'ol/source'
-import GeoJSON from 'ol/format/GeoJSON'
-import { SelectedStyles } from '@/views/map/mapmapStyle'
-import { useMapCurStore } from '@/stores/mapCur'
-import { saveAs } from 'file-saver'
-import { BgAxios } from '@/utils/axiosUtils'
-import { LinearRing } from 'ol/geom'
-import { fromExtent } from 'ol/geom/Polygon'
-import { Feature } from 'ol'
+import { onMounted, reactive, ref } from 'vue';
+import { QvMap } from '@/views/map/QvMap';
+import eventBus from '@/utils/eventBus';
+import { Fill, Stroke, Style } from 'ol/style';
+import { Vector as VectorLayer } from 'ol/layer';
+import { Vector as VectorSource } from 'ol/source';
+import GeoJSON from 'ol/format/GeoJSON';
+import { SelectedStyles } from '@/views/map/mapmapStyle';
+import { useMapCurStore } from '@/stores/mapCur';
+import { saveAs } from 'file-saver';
+import { BgAxios } from '@/utils/axiosUtils';
+import { LinearRing } from 'ol/geom';
+import { fromExtent } from 'ol/geom/Polygon';
+import { Feature } from 'ol';
+import { PointAnalysis } from '@/views/anasys/point/PointAnalysis';
 
-const map = ref<any>()
+import { v4 as uuidv4 } from 'uuid';
+import { ProdLayersTypeEnum } from '@/views/map/ConstValue';
+import { LineAnalysis } from '@/views/anasys/line/LineAnalysis';
+
+let pointAna = new PointAnalysis();
+let lineAna = new LineAnalysis();
+const map = ref<any>();
 let mapData = reactive({
   coordinates: [],
   zoom: -1,
@@ -28,18 +35,18 @@ let mapData = reactive({
   isSelect: false,
   // 是否开启坐标拾取
   isOpenCoordinatePicku: false
-})
+});
 
-let qvMap = new QvMap('map', mapData)
+let qvMap = new QvMap('map', mapData);
 
 function exportGeojson(e) {
-  let str = qvMap.GetGeojsonWithLayer(e.uid)
-  let strData = new Blob([str], { type: 'text/plain;charset=utf-8' })
-  saveAs(strData, 'export.json')
+  let str = qvMap.GetGeojsonWithLayer(e.uid);
+  let strData = new Blob([str], { type: 'text/plain;charset=utf-8' });
+  saveAs(strData, 'export.json');
 }
 
 function exportShp(e) {
-  let str = qvMap.GetGeojsonWithLayer(e.uid)
+  let str = qvMap.GetGeojsonWithLayer(e.uid);
   BgAxios()
     .post(
       '/tools/geojson_to_shp',
@@ -52,14 +59,14 @@ function exportShp(e) {
       }
     )
     .then((res) => {
-      let blob = new Blob([res.data], {})
-      let objectUrl = URL.createObjectURL(blob)
-      let a = document.createElement('a')
-      a.href = objectUrl
-      a.download = 'export.zip'
-      a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }))
-      window.URL.revokeObjectURL(blob)
-    })
+      let blob = new Blob([res.data], {});
+      let objectUrl = URL.createObjectURL(blob);
+      let a = document.createElement('a');
+      a.href = objectUrl;
+      a.download = 'export.zip';
+      a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+      window.URL.revokeObjectURL(blob);
+    });
 }
 
 /**
@@ -67,140 +74,177 @@ function exportShp(e) {
  */
 const ebs = () => {
   eventBus.on('closeDiTuLayer', (e) => {
-    console.log('closeDiTuLayer', e)
-    qvMap.showOrDisplay(e, false)
-  })
+    console.log('closeDiTuLayer', e);
+    qvMap.showOrDisplay(e, false);
+  });
   eventBus.on('openDiTuLayer', (e) => {
-    console.log('openDiTuLayer', e)
-    qvMap.showOrDisplay(e, true)
-  })
+    console.log('openDiTuLayer', e);
+    qvMap.showOrDisplay(e, true);
+  });
   eventBus.on('closeVectorLayer', (e) => {
-    console.log('closeVectorLayer', e)
-    let layersByUid = qvMap.getLayersByUid(e)
+    console.log('closeVectorLayer', e);
+    let layersByUid = qvMap.getLayersByUid(e);
     if (layersByUid) {
-      layersByUid.setVisible(false)
+      layersByUid.setVisible(false);
     }
-  })
+  });
   eventBus.on('openVectorLayer', (e) => {
-    console.log('openVectorLayer', e)
-    let layersByUid = qvMap.getLayersByUid(e)
+    console.log('openVectorLayer', e);
+    let layersByUid = qvMap.getLayersByUid(e);
     if (layersByUid) {
-      layersByUid.setVisible(true)
+      layersByUid.setVisible(true);
     }
-  })
+  });
 
   eventBus.on('gen-csv', (e) => {
-    console.log(e)
-    qvMap.addGeoJsonForCsvImport(e.uid, e.geo, e.geo_type)
-  })
+    console.log(e);
+    qvMap.addGeoJsonForCsvImport(e.uid, e.geo, e.geo_type);
+  });
 
   eventBus.on('gen-mysql', (e) => {
-    qvMap.addSqlGeojsonFile(e.uid, e.geojsons[0])
-  })
+    qvMap.addSqlGeojsonFile(e.uid, e.geojsons[0]);
+  });
   eventBus.on('export-geojson', (e) => {
-    exportGeojson(e)
-  })
+    exportGeojson(e);
+  });
   eventBus.on('export-shp', (e) => {
-    exportShp(e)
-  })
+    exportShp(e);
+  });
 
   eventBus.on('map-change-module', (e) => {
-    let module = e.module
+    let module = e.module;
     if (module == 'view') {
       // 开启属性查看模式
       // 查看模式切换没有关闭
-      qvMap.openSelectO()
+      qvMap.openSelectO();
     } else {
-      qvMap.closeSelect()
+      qvMap.closeSelect();
     }
 
     if (module != 'editor') {
       if (useMapCurStore().mapCurData.curEditorLayerNid) {
-        qvMap.endEditor(useMapCurStore().mapCurData.curEditorLayerNid)
+        qvMap.endEditor(useMapCurStore().mapCurData.curEditorLayerNid);
       }
     }
-  })
+  });
 
   eventBus.on('positioning', (e) => {
     // 地图中心移动到 e.x e.y
-    qvMap.moveToXY(e.x, e.y)
+    qvMap.moveToXY(e.x, e.y);
     // 地图上标记一个闪烁的点 5秒后移除
-    qvMap.addShanLayers(e.x, e.y, 3000)
-  })
+    qvMap.addShanLayers(e.x, e.y, 3000);
+  });
   eventBus.on('gen-geojson', (e) => {
-    qvMap.addGeojsonFile(e.uid, e.geojson)
-  })
+    qvMap.addGeojsonFile(e.uid, e.geojson);
+  });
 
   eventBus.on('stop-editor', (e) => {
     if (e.nid) {
-      qvMap.endEditor(e.nid)
+      qvMap.endEditor(e.nid);
     }
-  })
+  });
   eventBus.on('start-editor', (e) => {
     if (e.nid) {
-      qvMap.startEditor(e.nid)
+      qvMap.startEditor(e.nid);
     }
-  })
+  });
 
   eventBus.on('gen-buffer', (e) => {
-    console.log('缓冲区', e)
-    let gjson = qvMap.GetGeojsonWithLayer(e.layerName)
-    qvMap.addBufferLayer(e.id, gjson, e.size, e.unity)
-    eventBus.emit('gen-buffer-menu', e)
-  })
+    console.log('缓冲区', e);
+    let gjson = qvMap.GetGeojsonWithLayer(e.layerName);
+    qvMap.addBufferLayer(e.id, gjson, e.size, e.unity);
+    eventBus.emit('gen-buffer-menu', e);
+  });
 
   eventBus.on('change-style', (e) => {
-    qvMap.changeStyle(e)
-  })
+    qvMap.changeStyle(e);
+  });
 
   eventBus.on('get_fields', (e) => {
-    let layersByUid = qvMap.getLayersByUid(e.uid)
-    var attributeNames = []
+    let layersByUid = qvMap.getLayersByUid(e.uid);
+    var attributeNames = [];
     if (layersByUid.getSource().getFeatures()) {
       layersByUid
         .getSource()
         .getFeatures()
         .forEach(function (feature) {
-          var properties = feature.getProperties()
-          var keys = Object.keys(properties)
+          var properties = feature.getProperties();
+          var keys = Object.keys(properties);
           keys.forEach(function (key) {
             if (!attributeNames.includes(key)) {
-              attributeNames.push(key)
+              attributeNames.push(key);
             }
-          })
-        })
+          });
+        });
     }
-    useMapCurStore().mapCurData.field = attributeNames
-  })
+    useMapCurStore().mapCurData.field = attributeNames;
+  });
 
   eventBus.on('add_conver', (e) => {
-    qvMap.addConver(e.geojson, e.color)
-  })
+    qvMap.addConver(e.geojson, e.color);
+  });
   eventBus.on('remove_conver', (e) => {
-    qvMap.removeConver()
-  })
+    qvMap.removeConver();
+  });
+
+  eventBus.on('line-self-overlaps', (e) => {
+    let geojsonstr = qvMap.exportGeoJsonString(e.layerName);
+    let nodeId = uuidv4();
+    let findSelfFullOverlaps = lineAna.findSelfOverlaps(JSON.parse(geojsonstr), e.full === 'true');
+
+    qvMap.addLineSelfOverlapsLayer(nodeId, findSelfFullOverlaps);
+
+    eventBus.emit('line-self-overlaps-tree', {
+      old: e.layerName,
+      value: nodeId,
+      label: nodeId,
+      uid: nodeId,
+      tag: ProdLayersTypeEnum.line_self_ov,
+      geo_type: 'line'
+    });
+  });
+  eventBus.on('point-repeat', (e) => {
+    let geojsonstr = qvMap.exportGeoJsonString(e.layerName);
+    let res;
+    if (e.field) {
+      res = pointAna.filterFeaturesByAttribute(JSON.parse(geojsonstr), e.field);
+    } else {
+      res = pointAna.findFeaturesWithSameCoordinates(JSON.parse(geojsonstr));
+    }
+    let nodeId = uuidv4();
+    qvMap?.addPointRepeatLayer(nodeId, { type: 'FeatureCollection', features: res });
+
+    eventBus.emit('point-repeat-tree', {
+      old: e.layerName,
+      value: nodeId,
+      label: nodeId,
+      uid: nodeId,
+      tag: ProdLayersTypeEnum.point_repeat,
+      geo_type: 'point'
+    });
+  });
 
   eventBus.on('exportMap', (e) => {
     qvMap.map.once('rendercomplete', function () {
-      const mapCanvas = document.createElement('canvas')
-      const size = qvMap.map.getSize()
-      mapCanvas.width = size[0]
-      mapCanvas.height = size[1]
-      const mapContext = mapCanvas.getContext('2d')
+      const mapCanvas = document.createElement('canvas');
+      const size = qvMap.map.getSize();
+      mapCanvas.width = size[0];
+      mapCanvas.height = size[1];
+      const mapContext = mapCanvas.getContext('2d');
       Array.prototype.forEach.call(
         qvMap.map.getViewport().querySelectorAll('.ol-layer canvas, canvas.ol-layer'),
         function (canvas) {
           if (canvas.width > 0) {
-            const opacity = canvas.parentNode.style.opacity || canvas.style.opacity
-            mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity)
-            let matrix
-            const transform = canvas.style.transform
+            const opacity = canvas.parentNode.style.opacity || canvas.style.opacity;
+            mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
+            let matrix;
+            const transform = canvas.style.transform;
             if (transform) {
               // Get the transform parameters from the style's transform matrix
               matrix = transform
                 .match(/^matrix\(([^\(]*)\)$/)[1]
                 .split(',')
-                .map(Number)
+                .map(Number);
             } else {
               matrix = [
                 parseFloat(canvas.style.width) / canvas.width,
@@ -209,48 +253,48 @@ const ebs = () => {
                 parseFloat(canvas.style.height) / canvas.height,
                 0,
                 0
-              ]
+              ];
             }
             // Apply the transform to the export map context
-            CanvasRenderingContext2D.prototype.setTransform.apply(mapContext, matrix)
-            const backgroundColor = canvas.parentNode.style.backgroundColor
+            CanvasRenderingContext2D.prototype.setTransform.apply(mapContext, matrix);
+            const backgroundColor = canvas.parentNode.style.backgroundColor;
             if (backgroundColor) {
-              mapContext.fillStyle = backgroundColor
-              mapContext.fillRect(0, 0, canvas.width, canvas.height)
+              mapContext.fillStyle = backgroundColor;
+              mapContext.fillRect(0, 0, canvas.width, canvas.height);
             }
-            mapContext.drawImage(canvas, 0, 0)
+            mapContext.drawImage(canvas, 0, 0);
           }
         }
-      )
-      mapContext.globalAlpha = 1
-      mapContext.setTransform(1, 0, 0, 1, 0, 0)
-      const link = document.getElementById('image-download')
-      link.href = mapCanvas.toDataURL()
-      link.click()
-    })
-    qvMap.map.renderSync()
-  })
+      );
+      mapContext.globalAlpha = 1;
+      mapContext.setTransform(1, 0, 0, 1, 0, 0);
+      const link = document.getElementById('image-download');
+      link.href = mapCanvas.toDataURL();
+      link.click();
+    });
+    qvMap.map.renderSync();
+  });
 
   //todo: 功能还不正确（数据相关
   eventBus.on('subway', (e) => {
-    let features = []
+    let features = [];
 
     for (let d in e.geo) {
-      let fet = []
+      let fet = [];
       for (let o of e.geo[d]) {
         fet.push({
           type: 'Feature',
           properties: {},
           geometry: o
-        })
+        });
       }
-      features.push(...fet)
+      features.push(...fet);
     }
 
     let d2 = {
       type: 'FeatureCollection',
       features: features
-    }
+    };
 
     let vectorLayer = new VectorLayer({
       source: new VectorSource({
@@ -258,23 +302,23 @@ const ebs = () => {
       }),
       style: function (f) {
         // @ts-ignore
-        return SelectedStyles[f.getGeometry().getType()]
+        return SelectedStyles[f.getGeometry().getType()];
       }
-    })
-    vectorLayer.setZIndex(99999)
-    qvMap.map.addLayer(vectorLayer)
-    console.log(JSON.stringify(d2))
-  })
-}
+    });
+    vectorLayer.setZIndex(99999);
+    qvMap.map.addLayer(vectorLayer);
+    console.log(JSON.stringify(d2));
+  });
+};
 
 onMounted(() => {
-  console.log('初始化地图')
-  map.value = qvMap.initMap()
+  console.log('初始化地图');
+  map.value = qvMap.initMap();
 
-  ebs()
+  ebs();
   // qvMap.showOrDisplay(ProdLayersTypeEnum.vec_c_jwd, true)
   // qvMap.showOrDisplay(ProdLayersTypeEnum.vec_jwd_label, true)
-})
+});
 </script>
 
 <template>

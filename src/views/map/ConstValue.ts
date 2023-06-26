@@ -1,4 +1,4 @@
-import { QvMap } from './QvMap'
+import { QvMap } from './QvMap';
 
 export enum ProdLayersTypeEnum {
   vec_c_jwd = '矢量底图-经纬度',
@@ -21,27 +21,27 @@ export enum ProdLayersTypeEnum {
 
 export function getProj(layer: ProdLayersTypeEnum) {
   if (layer == ProdLayersTypeEnum.vec_c_jwd) {
-    return 'EPSG:4326'
+    return 'EPSG:4326';
   }
   if (layer == ProdLayersTypeEnum.vec_jwd_label) {
-    return 'EPSG:4326'
+    return 'EPSG:4326';
   }
   if (layer == ProdLayersTypeEnum.vec_c_mkt) {
-    return 'EPSG:3857'
+    return 'EPSG:3857';
   }
   if (layer == ProdLayersTypeEnum.vec_mkt_label) {
-    return 'EPSG:3857'
+    return 'EPSG:3857';
   }
   if (layer == ProdLayersTypeEnum.img_c_jwd) {
-    return 'EPSG:4326'
+    return 'EPSG:4326';
   }
   if (layer == ProdLayersTypeEnum.img_jwd_label) {
-    return 'EPSG:4326'
+    return 'EPSG:4326';
   }
   if (layer == ProdLayersTypeEnum.img_c_mkt) {
-    return 'EPSG:3857'
+    return 'EPSG:3857';
   }
   if (layer == ProdLayersTypeEnum.img_mkt_label) {
-    return 'EPSG:3857'
+    return 'EPSG:3857';
   }
 }

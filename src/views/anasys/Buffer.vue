@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { inject, nextTick, onMounted, reactive, Ref, watch } from 'vue'
-import { useMapCurStore } from '@/stores/mapCur'
-import eventBus, { sendDialogConfirmHandlerOk } from '@/utils/eventBus'
+import { inject, nextTick, onMounted, reactive, Ref, watch } from 'vue';
+import { useMapCurStore } from '@/stores/mapCur';
+import eventBus, { sendDialogConfirmHandlerOk } from '@/utils/eventBus';
 
 const units = [
   { label: '米', value: 'meters' },
@@ -17,28 +17,28 @@ const units = [
   { label: '弧度', value: 'radians' },
   { label: '度', value: 'degrees' },
   { label: '公顷', value: 'hectares' }
-]
-import { v4 as uuidv4 } from 'uuid'
+];
+import { v4 as uuidv4 } from 'uuid';
 
 const data = reactive({
   unity: 'meters',
   size: 1,
   layerName: '',
   id: ''
-})
+});
 
-const PATH = '/buffer'
+const PATH = '/buffer';
 const ok = () => {
-  console.log('缓冲区参数', data)
-  eventBus.emit('gen-buffer', data)
-}
+  console.log('缓冲区参数', data);
+  eventBus.emit('gen-buffer', data);
+};
 eventBus.on('dialog_confirm', async (e) => {
   if (e.path == PATH) {
-    data.id = uuidv4()
-    await ok()
-    sendDialogConfirmHandlerOk()
+    data.id = uuidv4();
+    await ok();
+    sendDialogConfirmHandlerOk();
   }
-})
+});
 </script>
 
 <template>

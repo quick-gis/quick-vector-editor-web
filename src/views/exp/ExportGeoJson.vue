@@ -1,29 +1,29 @@
 <script setup lang="ts">
-import { useMapCurStore } from '@/stores/mapCur'
-import { onMounted, reactive, watch } from 'vue'
-import eventBus, { sendDialogConfirmHandlerOk } from '@/utils/eventBus'
-import { useMapTokenStore } from '@/stores/mapToken'
+import { useMapCurStore } from '@/stores/mapCur';
+import { onMounted, reactive, watch } from 'vue';
+import eventBus, { sendDialogConfirmHandlerOk } from '@/utils/eventBus';
+import { useMapTokenStore } from '@/stores/mapToken';
 const data = reactive({
   curLayer: null
-})
-const PATH = '/expgeojson'
-import { saveAs } from 'file-saver'
+});
+const PATH = '/expgeojson';
+import { saveAs } from 'file-saver';
 
 onMounted(() => {
   eventBus.on('dialog_confirm', (e) => {
     if (e.path == PATH) {
       if (data.curLayer) {
-        eventBus.emit('export-geojson', { uid: data.curLayer })
+        eventBus.emit('export-geojson', { uid: data.curLayer });
       }
     }
-  })
-})
+  });
+});
 
 const downloadTxt = () => {
-  let str = data.curLayer
-  let strData = new Blob([str], { type: 'text/plain;charset=utf-8' })
-  saveAs(strData, '测试文件下载.txt')
-}
+  let str = data.curLayer;
+  let strData = new Blob([str], { type: 'text/plain;charset=utf-8' });
+  saveAs(strData, '测试文件下载.txt');
+};
 </script>
 
 <template>

@@ -62,9 +62,6 @@
           <t-menu-item value="5-1-1" @click="openTianDiTuConfig('/isolation_point')"
             >孤立点分析
           </t-menu-item>
-          <t-menu-item value="5-1-2" @click="openTianDiTuConfig('/PointOverride')"
-            >点覆盖分析
-          </t-menu-item>
         </t-submenu>
         <t-submenu value="5-2">
           <template #title>
@@ -94,42 +91,42 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from 'vue'
-import router from '@/router'
-import eventBus, { sendDialogCancel, sendDialogConfirm } from '@/utils/eventBus'
-import DynamicDialog from '@/views/common/DynamicDialog.vue'
+import { onMounted, reactive, ref } from 'vue';
+import router from '@/router';
+import eventBus, { sendDialogCancel, sendDialogConfirm } from '@/utils/eventBus';
+import DynamicDialog from '@/views/common/DynamicDialog.vue';
 
-const cnm = () => {}
+const cnm = () => {};
 const visible = reactive({
   dialog: false,
   dialog_width: '75%'
-})
-const pathV = ref()
+});
+const pathV = ref();
 const confirm = () => {
-  sendDialogConfirm(pathV.value)
-}
+  sendDialogConfirm(pathV.value);
+};
 onMounted(() => {
   eventBus.on('dialog_confirm_handler_ok', () => {
-    visible.dialog = false
-  })
-})
+    visible.dialog = false;
+  });
+});
 const cancel = () => {
-  sendDialogCancel()
-  visible.dialog = false
-}
+  sendDialogCancel();
+  visible.dialog = false;
+};
 const exportMap = () => {
-  eventBus.emit('exportMap')
-}
+  eventBus.emit('exportMap');
+};
 const removeConver = () => {
-  eventBus.emit('remove_conver')
-}
+  eventBus.emit('remove_conver');
+};
 const openTianDiTuConfig = (path) => {
   router.push({
     path: path
-  })
-  pathV.value = path
-  visible.dialog = true
-}
+  });
+  pathV.value = path;
+  visible.dialog = true;
+};
 </script>
 <style lang="less" scoped>
 .t-menu__operations {

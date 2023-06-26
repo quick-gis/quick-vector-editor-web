@@ -1,56 +1,56 @@
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
-import eventBus from '@/utils/eventBus'
+import { reactive, ref } from 'vue';
+import eventBus from '@/utils/eventBus';
 
 const feature = reactive({
   properties: {},
   geometry: {}
-})
+});
 
 const positioning = () => {
   if (tableData.value) {
     eventBus.emit('positioning', {
       x: tableData.value[0].x,
       y: tableData.value[0].y
-    })
+    });
   }
-}
+};
 eventBus.on('attr-click', (e) => {
-  feature.properties = e.geojson.properties
-  feature.geometry = e.geojson.geometry
-  let d = getCoordinates(feature.geometry)
-  const arr = []
+  feature.properties = e.geojson.properties;
+  feature.geometry = e.geojson.geometry;
+  let d = getCoordinates(feature.geometry);
+  const arr = [];
   for (let i in d) {
     if (d[i][0][0]) {
       arr.push({
         id: i,
         x: d[i][0][0],
         y: d[i][1][1]
-      })
+      });
     } else {
       arr.push({
         id: i,
         x: d[i][0],
         y: d[i][1]
-      })
+      });
     }
   }
-  tableData.value = arr
-})
+  tableData.value = arr;
+});
 const getCoordinates = (geometry) => {
-  let coordinates = []
+  let coordinates = [];
   if (geometry.type === 'Point' || geometry.type === 'MultiPoint') {
-    coordinates.push(geometry.coordinates)
+    coordinates.push(geometry.coordinates);
   } else if (geometry.type === 'LineString' || geometry.type === 'MultiLineString') {
-    coordinates.push(...geometry.coordinates)
+    coordinates.push(...geometry.coordinates);
   } else if (geometry.type === 'Polygon' || geometry.type === 'MultiPolygon') {
     geometry.coordinates.forEach((coords) => {
-      coordinates.push(...coords)
-    })
+      coordinates.push(...coords);
+    });
   }
-  return coordinates
-}
-const tableData = ref()
+  return coordinates;
+};
+const tableData = ref();
 const cols = ref([
   { colKey: 'id', title: '序号', width: 20, foot: '-' },
   {
@@ -60,7 +60,7 @@ const cols = ref([
     foot: '-'
   },
   { colKey: 'y', title: 'y', width: 30, foot: '-' }
-])
+]);
 </script>
 
 <template>

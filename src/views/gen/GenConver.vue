@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { onMounted, reactive } from 'vue'
-import eventBus, { sendDialogConfirmHandlerOk } from '@/utils/eventBus'
-import { v4 as uuidv4 } from 'uuid'
+import { onMounted, reactive } from 'vue';
+import eventBus, { sendDialogConfirmHandlerOk } from '@/utils/eventBus';
+import { v4 as uuidv4 } from 'uuid';
 
 const data = reactive({
   files: [],
   geojson: '',
   color: ''
-})
+});
 const requestMethod = (file) => {
   return new Promise((resolve) => {
-    resolve({ status: 'success', response: { url: '/' } })
-  })
-}
-let reader = new FileReader()
-const PATH = '/add_conver'
+    resolve({ status: 'success', response: { url: '/' } });
+  });
+};
+let reader = new FileReader();
+const PATH = '/add_conver';
 
 onMounted(() => {
   eventBus.on('dialog_confirm', (e) => {
@@ -25,21 +25,21 @@ onMounted(() => {
         geojson: data.geojson,
         geo_type: 'collection',
         color: data.color
-      })
-      sendDialogConfirmHandlerOk()
+      });
+      sendDialogConfirmHandlerOk();
     }
-  })
-})
+  });
+});
 const first = (file) => {
-  console.log(file.raw)
-  data.files = [file.name]
-  reader.readAsText(file.raw)
+  console.log(file.raw);
+  data.files = [file.name];
+  reader.readAsText(file.raw);
   reader.onload = () => {
-    data.geojson = reader.result
-  }
+    data.geojson = reader.result;
+  };
 
-  return true
-}
+  return true;
+};
 </script>
 
 <template>

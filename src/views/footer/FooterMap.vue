@@ -1,31 +1,31 @@
 <script setup lang="ts">
-import { useMapCurStore } from '@/stores/mapCur'
-import { reactive, watch } from 'vue'
-import eventBus from '@/utils/eventBus'
+import { useMapCurStore } from '@/stores/mapCur';
+import { reactive, watch } from 'vue';
+import eventBus from '@/utils/eventBus';
 
 const data = reactive({
   module: 'ordinary',
   curLayer: ''
-})
+});
 watch(
   () => {
-    return data.module
+    return data.module;
   },
   (ov, nv) => {
-    eventBus.emit('map-change-module', { module: data.module })
-    useMapCurStore().mapCurData.module = data.module
+    eventBus.emit('map-change-module', { module: data.module });
+    useMapCurStore().mapCurData.module = data.module;
   }
-)
+);
 watch(
   () => {
-    return data.curLayer
+    return data.curLayer;
   },
   (nv, ov) => {
-    eventBus.emit('stop-editor', { nid: ov })
-    eventBus.emit('start-editor', { nid: nv })
-    useMapCurStore().mapCurData.curEditorLayerNid = nv
+    eventBus.emit('stop-editor', { nid: ov });
+    eventBus.emit('start-editor', { nid: nv });
+    useMapCurStore().mapCurData.curEditorLayerNid = nv;
   }
-)
+);
 </script>
 
 <template>

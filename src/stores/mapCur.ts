@@ -1,5 +1,5 @@
-import { ref, computed, reactive } from 'vue'
-import { defineStore } from 'pinia'
+import { computed, reactive } from 'vue';
+import { defineStore } from 'pinia';
 
 export const useMapCurStore = defineStore('map_cur', () => {
   const mapCurData = reactive({
@@ -12,12 +12,17 @@ export const useMapCurStore = defineStore('map_cur', () => {
     curEditorLayerNid: '',
     exportLayer: '',
     field: []
-  })
+  });
 
   const canEditorLayerNodeComputed = computed(() => {
     return mapCurData.canEditorLayerNode.filter(
       (col) => col.geo_type && col.geo_type?.toLowerCase() == 'point'.toLowerCase()
-    )
-  })
-  return { mapCurData, canEditorLayerNodeComputed }
-})
+    );
+  });
+  const canEditorLayerNodeLineComputed = computed(() => {
+    return mapCurData.canEditorLayerNode.filter(
+      (col) => col.geo_type && col.geo_type?.toLowerCase() == 'line'.toLowerCase()
+    );
+  });
+  return { mapCurData, canEditorLayerNodeComputed, canEditorLayerNodeLineComputed };
+});

@@ -1,27 +1,27 @@
 <script lang="ts" setup>
-import { nextTick, onMounted, reactive, watch } from 'vue'
-import * as mysql from 'mysql'
-import { BgAxios } from '@/utils/axiosUtils'
-import eventBus, { sendDialogConfirmHandlerOk } from '@/utils/eventBus'
-import { v4 as uuidv4 } from 'uuid'
-const PATH = '/gen_mysql'
+import { nextTick, onMounted, reactive, watch } from 'vue';
+import * as mysql from 'mysql';
+import { BgAxios } from '@/utils/axiosUtils';
+import eventBus, { sendDialogConfirmHandlerOk } from '@/utils/eventBus';
+import { v4 as uuidv4 } from 'uuid';
+const PATH = '/gen_mysql';
 
 onMounted(() => {
   eventBus.on('dialog_confirm', async (e) => {
     if (e.path == PATH) {
-      await calcGeojson()
+      await calcGeojson();
       await nextTick(() => {
         eventBus.emit('gen-mysql', {
           geojsons: data.geojsonCollections,
           name: data.linkConfig.table,
           geo_type: data.type,
           uid: uuidv4()
-        })
-      })
-      sendDialogConfirmHandlerOk()
+        });
+      });
+      sendDialogConfirmHandlerOk();
     }
-  })
-})
+  });
+});
 const data = reactive({
   type: 'collection',
   linkConfig: {
@@ -39,56 +39,56 @@ const data = reactive({
   },
 
   geojsonCollections: []
-})
-let connection
+});
+let connection;
 const testLink = () => {
   BgAxios()
     .post('/db/dbs', data.linkConfig)
     .then((res) => {
       if (res.data.code == 'ok') {
-        data.linkConfig.databases = res.data.data
-        data.linkConfig.isLink = true
+        data.linkConfig.databases = res.data.data;
+        data.linkConfig.isLink = true;
       }
-      console.log(res)
-    })
-}
+      console.log(res);
+    });
+};
 watch(
   () => {
-    return data.linkConfig.db
+    return data.linkConfig.db;
   },
   (newVal, oldVal) => {
     BgAxios()
       .post('/db/tables', data.linkConfig)
       .then((res) => {
         if (res.data.code == 'ok') {
-          data.linkConfig.tables = res.data.data
+          data.linkConfig.tables = res.data.data;
         }
-        console.log(res)
-      })
+        console.log(res);
+      });
   }
-)
+);
 watch(
   () => {
-    return data.linkConfig.table
+    return data.linkConfig.table;
   },
   (nv, ov) => {
     BgAxios()
       .post('/db/tableFields', data.linkConfig)
       .then((res) => {
         if (res.data.code == 'ok') {
-          data.linkConfig.tableFields = res.data.data
+          data.linkConfig.tableFields = res.data.data;
         }
-        console.log(res)
-      })
+        console.log(res);
+      });
   }
-)
+);
 const calcGeojson = async () => {
-  let res = await BgAxios().post('/db/geojson', data.linkConfig)
+  let res = await BgAxios().post('/db/geojson', data.linkConfig);
 
   if (res.data.code == 'ok') {
-    return (data.geojsonCollections = res.data.data)
+    return (data.geojsonCollections = res.data.data);
   }
-}
+};
 </script>
 
 <template>

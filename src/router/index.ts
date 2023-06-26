@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,7 +20,7 @@ const router = createRouter({
       name: 'tdtConfig',
       component: () => {
         // @ts-ignore
-        return import('../views/token/TianDiTuToken.vue')
+        return import('../views/token/TianDiTuToken.vue');
       }
     },
     {
@@ -28,7 +28,7 @@ const router = createRouter({
       name: 'genCsv',
       component: () => {
         // @ts-ignore
-        return import('../views/gen/GenCsv.vue')
+        return import('../views/gen/GenCsv.vue');
       }
     },
     {
@@ -36,7 +36,7 @@ const router = createRouter({
       name: 'genGeoJson',
       component: () => {
         // @ts-ignore
-        return import('../views/gen/GenGeoJson.vue')
+        return import('../views/gen/GenGeoJson.vue');
       }
     },
     {
@@ -44,7 +44,7 @@ const router = createRouter({
       name: 'genMysql',
       component: () => {
         // @ts-ignore
-        return import('../views/gen/GenMysql.vue')
+        return import('../views/gen/GenMysql.vue');
       }
     },
     {
@@ -52,7 +52,7 @@ const router = createRouter({
       name: 'move_xy',
       component: () => {
         // @ts-ignore
-        return import('../views/tools/move_xy/MoveToXY.vue')
+        return import('../views/tools/move_xy/MoveToXY.vue');
       }
     },
     {
@@ -60,7 +60,7 @@ const router = createRouter({
       name: 'subway',
       component: () => {
         // @ts-ignore
-        return import('../views/dataview/GaoDeSubway.vue')
+        return import('../views/dataview/GaoDeSubway.vue');
       }
     },
     {
@@ -68,7 +68,7 @@ const router = createRouter({
       name: 'expgeojson',
       component: () => {
         // @ts-ignore
-        return import('../views/exp/ExportGeoJson.vue')
+        return import('../views/exp/ExportGeoJson.vue');
       }
     },
     {
@@ -76,7 +76,7 @@ const router = createRouter({
       name: 'buffer',
       component: () => {
         // @ts-ignore
-        return import('../views/anasys/Buffer.vue')
+        return import('../views/anasys/Buffer.vue');
       }
     },
     {
@@ -84,7 +84,7 @@ const router = createRouter({
       name: 'style',
       component: () => {
         // @ts-ignore
-        return import('../views/label/LabelViewLine.vue')
+        return import('../views/label/LabelViewLine.vue');
       }
     },
     {
@@ -92,10 +92,10 @@ const router = createRouter({
       name: 'add_conver',
       component: () => {
         // @ts-ignore
-        return import('@/views/gen/GenConver.vue')
+        return import('@/views/gen/GenConver.vue');
       }
     }
   ]
-})
+});
 
-export default router
+export default router;

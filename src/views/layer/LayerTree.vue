@@ -67,43 +67,43 @@
 </template>
 
 <script setup>
-import { MessagePlugin } from 'tdesign-vue-next'
-import { nextTick, reactive, ref } from 'vue'
-import { ProdLayersTypeEnum } from '@/views/map/ConstValue'
-import { difference } from '@/utils/Utils'
-import { findNodeByLabel, findNodeByValue } from '@/utils/NodeUtil'
+import { MessagePlugin } from 'tdesign-vue-next';
+import { nextTick, reactive, ref } from 'vue';
+import { ProdLayersTypeEnum } from '@/views/map/ConstValue';
+import { difference } from '@/utils/Utils';
+import { findNodeByLabel, findNodeByValue } from '@/utils/NodeUtil';
 import eventBus, {
   closeDiTuLayer,
   closeVectorLayer,
   openDiTuLayer,
   openVectorLayer
-} from '@/utils/eventBus'
-import { useMapCurStore } from '@/stores/mapCur'
-import Label from '@/views/label/Label.vue'
+} from '@/utils/eventBus';
+import { useMapCurStore } from '@/stores/mapCur';
+import Label from '@/views/label/Label.vue';
 
 const visible = reactive({
   dialog: false,
   dialog_width: '75%',
   uid: ''
-})
-const pathV = ref()
+});
+const pathV = ref();
 
-const curNode = ref()
+const curNode = ref();
 const clickHandler = (data) => {
-  MessagePlugin.success(`选中【${data.content}】`)
-}
+  MessagePlugin.success(`选中【${data.content}】`);
+};
 const contextmenuConfig = reactive({
   x: 0,
   y: 0,
   display: false
-})
+});
 const rightClick = (e, node) => {
-  e.preventDefault()
+  e.preventDefault();
   if (node.data.tag) {
-    contextmenuConfig.display = true
-    contextmenuConfig.y = e.clientY
-    contextmenuConfig.x = e.clientX
-    curNode.value = node.data
+    contextmenuConfig.display = true;
+    contextmenuConfig.y = e.clientY;
+    contextmenuConfig.x = e.clientX;
+    curNode.value = node.data;
   }
   if (
     node.data.tag == ProdLayersTypeEnum.vec_c_jwd ||
@@ -115,37 +115,37 @@ const rightClick = (e, node) => {
     node.data.tag == ProdLayersTypeEnum.img_c_mkt ||
     node.data.tag == ProdLayersTypeEnum.img_mkt_label
   ) {
-    contextmenuConfig.display = false
+    contextmenuConfig.display = false;
   }
-}
+};
 
-const tree = ref()
+const tree = ref();
 const exportGeojson = () => {
-  eventBus.emit('export-geojson', { uid: curNode.value.uid })
-}
+  eventBus.emit('export-geojson', { uid: curNode.value.uid });
+};
 
 const changeLabel = () => {
-  visible.uid = curNode.value.uid
+  visible.uid = curNode.value.uid;
 
-  eventBus.emit('get_fields', { uid: curNode.value.uid })
+  eventBus.emit('get_fields', { uid: curNode.value.uid });
 
   if (curNode.value.geo_type.toLowerCase() == 'point'.toLowerCase()) {
-    pathV.value = '/style_point'
-    visible.dialog = true
+    pathV.value = '/style_point';
+    visible.dialog = true;
   } else if (curNode.value.geo_type.toLowerCase() == 'line'.toLowerCase()) {
-    pathV.value = '/style_line'
-    visible.dialog = true
+    pathV.value = '/style_line';
+    visible.dialog = true;
   } else if (curNode.value.geo_type.toLowerCase() == 'polygon'.toLowerCase()) {
-    pathV.value = '/style_polygon'
-    visible.dialog = true
+    pathV.value = '/style_polygon';
+    visible.dialog = true;
   } else if (curNode.value.geo_type.toLowerCase() == 'collection'.toLowerCase()) {
-    pathV.value = '/style_collection'
-    visible.dialog = true
+    pathV.value = '/style_collection';
+    visible.dialog = true;
   }
-}
+};
 const exportShp = () => {
-  eventBus.emit('export-shp', { uid: curNode.value.uid })
-}
+  eventBus.emit('export-shp', { uid: curNode.value.uid });
+};
 
 const data = reactive({
   itemsString: [
@@ -180,6 +180,20 @@ const data = reactive({
         {
           value: '3-1',
           label: '缓冲区分析',
+          disabled: true,
+          tag: '',
+          children: []
+        },
+        {
+          value: '3-2',
+          label: '点重复分析',
+          disabled: true,
+          tag: '',
+          children: []
+        },
+        {
+          value: '3-3',
+          label: '线重复分析',
           disabled: true,
           tag: '',
           children: []
@@ -239,24 +253,67 @@ const data = reactive({
       ]
     }
   ]
-})
+});
 
-const checkable = ref(true)
-const checkStrictly = ref(false)
+const checkable = ref(true);
+const checkStrictly = ref(false);
 
 const aboutNode = reactive({
   selectNode: []
-})
-const onActive = (v, c) => {}
-const onClick = (context) => {}
-const defaultValue = ref([])
+});
+const onActive = (v, c) => {};
+const onClick = (context) => {};
+const defaultValue = ref([]);
 eventBus.on('click-body', (e) => {
-  contextmenuConfig.display = false
-})
+  contextmenuConfig.display = false;
+});
+eventBus.on('line-self-overlaps-tree', (e) => {
+  let findNodeByLabel1 = findNodeByLabel(data.itemsString, '线重复分析');
+  let fn = findNodeByValue(data.itemsString, e.old).label + '-线重复分析';
+  let node = {
+    value: e.uid,
+    label: fn,
+    uid: e.uid,
+    tag: ProdLayersTypeEnum.line_self_ov,
+    geo_type: e.geo_type,
+    checked: true
+  };
+  useMapCurStore().mapCurData.canEditorLayerNode.push({
+    nid: e.uid,
+    name: fn,
+    geo_type: e.geo_type
+  });
 
+  tree.value.appendTo(findNodeByLabel1.value, node);
+  tree.value.setItem(e.uid, { checked: true });
+  aboutNode.selectNode.unshift(e.uid);
+  findNodeByLabel1.children.unshift(node);
+});
+eventBus.on('point-repeat-tree', (e) => {
+  let findNodeByLabel1 = findNodeByLabel(data.itemsString, '点重复分析');
+  let fn = findNodeByValue(data.itemsString, e.old).value + '-点重复分析';
+  let node = {
+    value: e.uid,
+    label: fn,
+    uid: e.uid,
+    tag: ProdLayersTypeEnum.point_repeat,
+    geo_type: e.geo_type,
+    checked: true
+  };
+  useMapCurStore().mapCurData.canEditorLayerNode.push({
+    nid: e.uid,
+    name: fn,
+    geo_type: e.geo_type
+  });
+
+  tree.value.appendTo(findNodeByLabel1.value, node);
+  tree.value.setItem(e.uid, { checked: true });
+  aboutNode.selectNode.unshift(e.uid);
+  findNodeByLabel1.children.unshift(node);
+});
 eventBus.on('gen-csv', (e) => {
-  console.log(e)
-  let findNodeByLabel1 = findNodeByLabel(data.itemsString, '文件图层')
+  console.log(e);
+  let findNodeByLabel1 = findNodeByLabel(data.itemsString, '文件图层');
 
   let node = {
     value: e.uid,
@@ -265,23 +322,23 @@ eventBus.on('gen-csv', (e) => {
     tag: ProdLayersTypeEnum.file,
     geo_type: e.geo_type,
     checked: true
-  }
+  };
   useMapCurStore().mapCurData.canEditorLayerNode.push({
     nid: e.uid,
     name: e.fileName,
     geo_type: e.geo_type
-  })
+  });
 
-  tree.value.appendTo(findNodeByLabel1.value, node)
-  tree.value.setItem(e.uid, { checked: true })
-  aboutNode.selectNode.unshift(e.uid)
-  findNodeByLabel1.children.unshift(node)
-})
+  tree.value.appendTo(findNodeByLabel1.value, node);
+  tree.value.setItem(e.uid, { checked: true });
+  aboutNode.selectNode.unshift(e.uid);
+  findNodeByLabel1.children.unshift(node);
+});
 eventBus.on('gen-buffer-menu', (e) => {
   nextTick(() => {
     // todo: 缓冲区图层
-    let findNodeByLabel1 = findNodeByLabel(data.itemsString, '缓冲区分析')
-    let n = findNodeByValue(data.itemsString, e.layerName)
+    let findNodeByLabel1 = findNodeByLabel(data.itemsString, '缓冲区分析');
+    let n = findNodeByValue(data.itemsString, e.layerName);
 
     let node = {
       value: e.id,
@@ -290,41 +347,41 @@ eventBus.on('gen-buffer-menu', (e) => {
       tag: ProdLayersTypeEnum.buffer,
       geo_type: 'polygon',
       checked: true
-    }
+    };
     useMapCurStore().mapCurData.canEditorLayerNode.push({
       nid: e.id,
       name: n.label + '-缓冲分析',
       geo_type: 'polygon'
-    })
-    tree.value.appendTo(findNodeByLabel1.value, node)
-    tree.value.setItem(e.id, { checked: true })
-    aboutNode.selectNode.unshift(e.id)
-    findNodeByLabel1.children.unshift(node)
-  })
-})
+    });
+    tree.value.appendTo(findNodeByLabel1.value, node);
+    tree.value.setItem(e.id, { checked: true });
+    aboutNode.selectNode.unshift(e.id);
+    findNodeByLabel1.children.unshift(node);
+  });
+});
 eventBus.on('gen-mysql', (e) => {
-  let findNodeByLabel1 = findNodeByLabel(data.itemsString, '数据库图层')
+  let findNodeByLabel1 = findNodeByLabel(data.itemsString, '数据库图层');
   let node = {
     value: e.uid,
     label: e.name,
     uid: e.uid,
     tag: ProdLayersTypeEnum.sql,
     geo_type: e.geo_type
-  }
+  };
   useMapCurStore().mapCurData.canEditorLayerNode.push({
     nid: e.uid,
     name: e.name,
     geo_type: e.geo_type
-  })
-  tree.value.appendTo(findNodeByLabel1.value, node)
-  tree.value.setItem(e.uid, { checked: true })
-  aboutNode.selectNode.unshift(e.uid)
-  findNodeByLabel1.children.unshift(node)
-})
+  });
+  tree.value.appendTo(findNodeByLabel1.value, node);
+  tree.value.setItem(e.uid, { checked: true });
+  aboutNode.selectNode.unshift(e.uid);
+  findNodeByLabel1.children.unshift(node);
+});
 
 eventBus.on('gen-geojson', (e) => {
-  console.log(e)
-  let findNodeByLabel1 = findNodeByLabel(data.itemsString, '文件图层')
+  console.log(e);
+  let findNodeByLabel1 = findNodeByLabel(data.itemsString, '文件图层');
 
   let node = {
     value: e.uid,
@@ -333,26 +390,26 @@ eventBus.on('gen-geojson', (e) => {
     tag: ProdLayersTypeEnum.file,
     geo_type: e.geo_type,
     checked: true
-  }
+  };
   useMapCurStore().mapCurData.canEditorLayerNode.push({
     nid: e.uid,
     name: e.name,
     geo_type: e.geo_type
-  })
+  });
 
-  tree.value.appendTo(findNodeByLabel1.value, node)
-  tree.value.setItem(e.uid, { checked: true })
-  aboutNode.selectNode.unshift(e.uid)
-  findNodeByLabel1.children.unshift(node)
-})
+  tree.value.appendTo(findNodeByLabel1.value, node);
+  tree.value.setItem(e.uid, { checked: true });
+  aboutNode.selectNode.unshift(e.uid);
+  findNodeByLabel1.children.unshift(node);
+});
 const onChange = (checked, context) => {
   // 找到需要设置为关闭的节点
-  let closeNode = difference(aboutNode.selectNode, checked)
-  console.log('需要关闭的', closeNode)
+  let closeNode = difference(aboutNode.selectNode, checked);
+  console.log('需要关闭的', closeNode);
   // 找到需要设置为显示的节点（显示节点直接等于checked变量）
-  console.log('需要开启的', checked)
+  console.log('需要开启的', checked);
   for (let never of closeNode) {
-    let findNodeByValue1 = findNodeByValue(data.itemsString, never)
+    let findNodeByValue1 = findNodeByValue(data.itemsString, never);
     if (findNodeByValue1) {
       if (
         findNodeByValue1.tag == ProdLayersTypeEnum.vec_c_jwd ||
@@ -364,15 +421,15 @@ const onChange = (checked, context) => {
         findNodeByValue1.tag == ProdLayersTypeEnum.img_c_mkt ||
         findNodeByValue1.tag == ProdLayersTypeEnum.img_mkt_label
       ) {
-        closeDiTuLayer(findNodeByValue1.tag)
+        closeDiTuLayer(findNodeByValue1.tag);
       } else {
-        closeVectorLayer(findNodeByValue1.value)
+        closeVectorLayer(findNodeByValue1.value);
       }
     }
   }
 
   for (let n of checked) {
-    let findNodeByValue1 = findNodeByValue(data.itemsString, n)
+    let findNodeByValue1 = findNodeByValue(data.itemsString, n);
 
     if (findNodeByValue1) {
       if (
@@ -385,16 +442,16 @@ const onChange = (checked, context) => {
         findNodeByValue1.tag == ProdLayersTypeEnum.img_c_mkt ||
         findNodeByValue1.tag == ProdLayersTypeEnum.img_mkt_label
       ) {
-        openDiTuLayer(findNodeByValue1.tag)
+        openDiTuLayer(findNodeByValue1.tag);
       } else {
-        openVectorLayer(findNodeByValue1.value)
+        openVectorLayer(findNodeByValue1.value);
       }
     }
   }
-  aboutNode.selectNode = checked
+  aboutNode.selectNode = checked;
 
-  console.log(context)
-}
+  console.log(context);
+};
 </script>
 
 <style scoped>

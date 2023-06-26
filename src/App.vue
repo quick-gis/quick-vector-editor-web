@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import TopMenu from '@/views/topmenu/TopMenu.vue'
-import FooterMap from '@/views/footer/FooterMap.vue'
-import MapView from '@/views/map/MapView.vue'
-import LayerTree from '@/views/layer/LayerTree.vue'
-import AttrWin from '@/views/attr/AttrWin.vue'
-import eventBus from '@/utils/eventBus'
-import { useMapCurStore } from '@/stores/mapCur'
+import TopMenu from '@/views/topmenu/TopMenu.vue';
+import FooterMap from '@/views/footer/FooterMap.vue';
+import MapView from '@/views/map/MapView.vue';
+import LayerTree from '@/views/layer/LayerTree.vue';
+import AttrWin from '@/views/attr/AttrWin.vue';
+import eventBus from '@/utils/eventBus';
+import { useMapCurStore } from '@/stores/mapCur';
 
 document.body.addEventListener('click', (e) => {
-  eventBus.emit('click-body')
-})
+  eventBus.emit('click-body');
+});
 </script>
 
 <template>

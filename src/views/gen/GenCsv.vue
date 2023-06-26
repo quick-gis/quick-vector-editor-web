@@ -1,78 +1,78 @@
 <script lang="ts" setup>
-import { onMounted, reactive } from 'vue'
-import eventBus, { sendDialogConfirmHandlerOk } from '@/utils/eventBus'
-import Papa from 'papaparse'
-import { v4 as uuidv4 } from 'uuid'
-import { MessagePlugin } from 'tdesign-vue-next'
+import { onMounted, reactive } from 'vue';
+import eventBus, { sendDialogConfirmHandlerOk } from '@/utils/eventBus';
+import Papa from 'papaparse';
+import { v4 as uuidv4 } from 'uuid';
+import { MessagePlugin } from 'tdesign-vue-next';
 
-let reader = new FileReader()
-const PATH = '/gen_csv'
+let reader = new FileReader();
+const PATH = '/gen_csv';
 onMounted(() => {
   eventBus.on('dialog_confirm', (e) => {
     if (e.path == PATH) {
-      ok()
-      eventBus.emit('gen-csv', data.dataRes)
-      sendDialogConfirmHandlerOk()
+      ok();
+      eventBus.emit('gen-csv', data.dataRes);
+      sendDialogConfirmHandlerOk();
     }
-  })
-})
+  });
+});
 
 function convertToKeyValue(data: string[][]) {
-  const result: [] = []
+  const result: [] = [];
 
-  const keys: string[] = data[0]
+  const keys: string[] = data[0];
 
   // 将其余的子列表转换为键值对
   for (let i = 1; i < data.length; i++) {
-    const values: string[] = data[i]
+    const values: string[] = data[i];
     if (values.length === keys.length) {
-      const resultDict = Object.fromEntries(keys.map((key, index) => [key, values[index]]))
-      result.push(resultDict)
+      const resultDict = Object.fromEntries(keys.map((key, index) => [key, values[index]]));
+      result.push(resultDict);
     }
   }
 
-  return { data: result, head: keys }
+  return { data: result, head: keys };
 }
 
 const importcsv = (obj) => {
-  console.log(obj)
-}
+  console.log(obj);
+};
 const importJson = (f) => {
-  reader.readAsText(f)
+  reader.readAsText(f);
   reader.onload = () => {
-    console.log(reader.result)
-  }
-}
+    console.log(reader.result);
+  };
+};
 const first = (file) => {
-  console.log(file.raw)
-  data.files = [file.name]
+  console.log(file.raw);
+  data.files = [file.name];
   Papa.parse(file.raw, {
     complete(results) {
-      let nevers = convertToKeyValue(results.data)
-      data.gen_shp.fields = nevers.head
-      data.csv.data = nevers.data
-      data.csv.header = nevers.head
+      let nevers = convertToKeyValue(results.data);
+      data.gen_shp.fields = nevers.head;
+      data.csv.data = nevers.data;
+      data.csv.header = nevers.head;
     }
-  })
+  });
 
-  return true
-}
+  return true;
+};
 
 const sec = (file) => {
-  data.link_config.file = [file.name]
+  data.link_config.file = [file.name];
 
   Papa.parse(file.raw, {
     complete(results) {
-      let nevers = convertToKeyValue(results.data)
-      data.link_config.fields = nevers.head
+      let nevers = convertToKeyValue(results.data);
+      data.link_config.fields = nevers.head;
 
-      data.linkcsv.data = nevers.data
+      data.linkcsv.data = nevers.data;
 
-      data.link_config.canSelectFile = true
+      data.link_config.canSelectFile = true;
     }
-  })
-  return true
-}
+  });
+  return true;
+};
 
 const data = reactive({
   files: [],
@@ -99,7 +99,7 @@ const data = reactive({
         {
           validator: (rule: any, value: any, callback: any) => {
             if (~data.pre_list.indexOf(value)) {
-              callback(new Error('前缀已使用'))
+              callback(new Error('前缀已使用'));
             }
           }
         }
@@ -131,14 +131,14 @@ const data = reactive({
     }
   },
   dataRes: null
-})
+});
 
 const ok = () => {
-  let features: any[] = []
+  let features: any[] = [];
 
   if (data.gen_shp.type == 'point') {
     for (let datum of data.csv.data) {
-      datum['iid'] = uuidv4()
+      datum['iid'] = uuidv4();
       let once = {
         type: 'Feature',
         properties: datum,
@@ -149,12 +149,12 @@ const ok = () => {
           ],
           type: 'Point'
         }
-      }
-      features.push(once)
+      };
+      features.push(once);
     }
   } else if (data.gen_shp.type == 'line') {
     for (let datum of data.csv.data) {
-      datum['iid'] = uuidv4()
+      datum['iid'] = uuidv4();
       let once = {
         type: 'Feature',
         properties: datum,
@@ -165,8 +165,8 @@ const ok = () => {
           ],
           type: 'LineString'
         }
-      }
-      features.push(once)
+      };
+      features.push(once);
     }
   }
   let dataRes = {
@@ -178,75 +178,75 @@ const ok = () => {
       features: features
     },
     geo_type: data.gen_shp.type
-  }
-  data.dataRes = dataRes
-  console.log(dataRes)
-}
+  };
+  data.dataRes = dataRes;
+  console.log(dataRes);
+};
 const requestMethod = (file) => {
   return new Promise((resolve) => {
-    resolve({ status: 'success', response: { url: '/' } })
-  })
-}
+    resolve({ status: 'success', response: { url: '/' } });
+  });
+};
 
 const validateLinkConfig = () => {
   if (!data.link_config.file) {
-    MessagePlugin('error', { content: '链接文件必填' })
+    MessagePlugin('error', { content: '链接文件必填' });
   }
 
   if (!data.link_config.source_field) {
-    MessagePlugin('error', { content: '原始字段必填' })
+    MessagePlugin('error', { content: '原始字段必填' });
   }
   if (!data.link_config.target_field) {
-    MessagePlugin('error', { content: '目标字段必填' })
+    MessagePlugin('error', { content: '目标字段必填' });
   }
   if (!data.link_config.pre) {
-    MessagePlugin('error', { content: '前缀必填' })
+    MessagePlugin('error', { content: '前缀必填' });
 
     if (~data.pre_list.indexOf(data.link_config.pre)) {
-      MessagePlugin('error', { content: '已使用前缀' })
+      MessagePlugin('error', { content: '已使用前缀' });
     }
   }
   if (!data.link_config.ref_field || data.link_config.ref_field.length == 0) {
-    MessagePlugin('error', { content: '引用字段必填' })
+    MessagePlugin('error', { content: '引用字段必填' });
   }
 
-  let vPre = data.link_config.pre != ''
-  data.pre_list.push(vPre)
+  let vPre = data.link_config.pre != '';
+  data.pre_list.push(vPre);
 
-  let vRefField = data.link_config.ref_field.length > 0
-  return vPre == true && vRefField == true
-}
+  let vRefField = data.link_config.ref_field.length > 0;
+  return vPre == true && vRefField == true;
+};
 const linkClose = () => {
-  console.log('链接表窗口关闭')
-  data.vlink = validateLinkConfig()
+  console.log('链接表窗口关闭');
+  data.vlink = validateLinkConfig();
 
   data.link_config.ref_field.forEach((e) => {
-    data.gen_shp.fields.push(data.link_config.pre + '_' + e)
-  })
+    data.gen_shp.fields.push(data.link_config.pre + '_' + e);
+  });
   data.csv.data.forEach((ee) => {
-    let ss = ee[data.link_config.source_field]
-    let o = find(ss, data.link_config.target_field)
+    let ss = ee[data.link_config.source_field];
+    let o = find(ss, data.link_config.target_field);
 
     for (let refFieldElement of data.link_config.ref_field) {
       if (o) {
-        ee[data.link_config.pre + '_' + refFieldElement] = o[refFieldElement]
+        ee[data.link_config.pre + '_' + refFieldElement] = o[refFieldElement];
       }
     }
-    console.log('sssssssssss', ss)
-    console.log('oooooo', o)
-  })
-  data.link_config.display = false
-}
+    console.log('sssssssssss', ss);
+    console.log('oooooo', o);
+  });
+  data.link_config.display = false;
+};
 const find = (ss, field) => {
-  let o = null
+  let o = null;
   data.linkcsv.data.forEach((e) => {
     if (e[field] == ss) {
-      o = e
-      return
+      o = e;
+      return;
     }
-  })
-  return o
-}
+  });
+  return o;
+};
 </script>
 
 <template>
@@ -285,13 +285,13 @@ const find = (ss, field) => {
         <t-button
           @click="
             () => {
-              data.link_config.display = true
-              data.link_config.file = []
-              data.link_config.fields = []
-              data.link_config.source_field = ''
-              data.link_config.target_field = ''
-              data.link_config.pre = ''
-              data.link_config.ref_field = []
+              data.link_config.display = true;
+              data.link_config.file = [];
+              data.link_config.fields = [];
+              data.link_config.source_field = '';
+              data.link_config.target_field = '';
+              data.link_config.pre = '';
+              data.link_config.ref_field = [];
             }
           "
           >配置
