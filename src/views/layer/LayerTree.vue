@@ -197,6 +197,13 @@ const data = reactive({
           disabled: true,
           tag: '',
           children: []
+        },
+        {
+          value: '3-4',
+          label: '环分析',
+          disabled: true,
+          tag: '',
+          children: []
         }
       ]
     },
@@ -267,7 +274,30 @@ const defaultValue = ref([]);
 eventBus.on('click-body', (e) => {
   contextmenuConfig.display = false;
 });
+
 eventBus.on('line-self-overlaps-tree', (e) => {
+  let findNodeByLabel1 = findNodeByLabel(data.itemsString, '环分析');
+  let fn = findNodeByValue(data.itemsString, e.old).label + '-环分析';
+  let node = {
+    value: e.uid,
+    label: fn,
+    uid: e.uid,
+    tag: ProdLayersTypeEnum.line_ring,
+    geo_type: e.geo_type,
+    checked: true
+  };
+  useMapCurStore().mapCurData.canEditorLayerNode.push({
+    nid: e.uid,
+    name: fn,
+    geo_type: e.geo_type
+  });
+
+  tree.value.appendTo(findNodeByLabel1.value, node);
+  tree.value.setItem(e.uid, { checked: true });
+  aboutNode.selectNode.unshift(e.uid);
+  findNodeByLabel1.children.unshift(node);
+});
+eventBus.on('line-ring-tree', (e) => {
   let findNodeByLabel1 = findNodeByLabel(data.itemsString, '线重复分析');
   let fn = findNodeByValue(data.itemsString, e.old).label + '-线重复分析';
   let node = {

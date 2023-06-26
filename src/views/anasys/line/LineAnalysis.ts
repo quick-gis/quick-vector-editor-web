@@ -1,3 +1,4 @@
+// @ts-ignore
 import { booleanContains, lineOverlap, lineString, multiLineString } from '@turf/turf';
 
 export class LineAnalysis {

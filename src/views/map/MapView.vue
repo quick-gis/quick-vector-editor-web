@@ -18,6 +18,7 @@ import { PointAnalysis } from '@/views/anasys/point/PointAnalysis';
 import { v4 as uuidv4 } from 'uuid';
 import { ProdLayersTypeEnum } from '@/views/map/ConstValue';
 import { LineAnalysis } from '@/views/anasys/line/LineAnalysis';
+import { GeoJsonLineCyc } from '@/views/anasys/line/GeoJsonLineCyc';
 
 let pointAna = new PointAnalysis();
 let lineAna = new LineAnalysis();
@@ -185,6 +186,22 @@ const ebs = () => {
   });
   eventBus.on('remove_conver', (e) => {
     qvMap.removeConver();
+  });
+
+  eventBus.on('line-ring', (e) => {
+    let geojsonstr = qvMap.exportGeoJsonString(e.layerName);
+    let geoJsonLineCyc = GeoJsonLineCyc(JSON.parse(geojsonstr));
+    let nodeId = uuidv4();
+
+    qvMap?.addLineRingLayer(nodeId, geoJsonLineCyc);
+    eventBus.emit('line-ring-tree', {
+      old: e.layerName,
+      value: nodeId,
+      label: nodeId,
+      uid: nodeId,
+      tag: ProdLayersTypeEnum.line_ring,
+      geo_type: 'line'
+    });
   });
 
   eventBus.on('line-self-overlaps', (e) => {
