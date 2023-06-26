@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref } from 'vue';
 import { QvMap } from '@/views/map/QvMap';
 import eventBus from '@/utils/eventBus';
-import { Fill, Stroke, Style } from 'ol/style';
+import { Style } from 'ol/style';
 import { Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource } from 'ol/source';
 import GeoJSON from 'ol/format/GeoJSON';
@@ -10,15 +10,13 @@ import { SelectedStyles } from '@/views/map/mapmapStyle';
 import { useMapCurStore } from '@/stores/mapCur';
 import { saveAs } from 'file-saver';
 import { BgAxios } from '@/utils/axiosUtils';
-import { LinearRing } from 'ol/geom';
-import { fromExtent } from 'ol/geom/Polygon';
-import { Feature } from 'ol';
 import { PointAnalysis } from '@/views/anasys/point/PointAnalysis';
 
 import { v4 as uuidv4 } from 'uuid';
 import { ProdLayersTypeEnum } from '@/views/map/ConstValue';
 import { LineAnalysis } from '@/views/anasys/line/LineAnalysis';
 import { GeoJsonLineCyc } from '@/views/anasys/line/GeoJsonLineCyc';
+import { getCenter } from 'ol/extent';
 
 let pointAna = new PointAnalysis();
 let lineAna = new LineAnalysis();
@@ -188,6 +186,16 @@ const ebs = () => {
     qvMap.removeConver();
   });
 
+  eventBus.on('moveToCenter', (e) => {
+    var ppp = qvMap.getLayersByUid(e.uid);
+    var layerExtent = ppp.getSource().getExtent();
+
+    let view = map.value.getView();
+    view.fit(layerExtent, {
+      duration: 1000000000 // 动画持续时间，可选
+    });
+    view.setCenter(getCenter(layerExtent));
+  });
   eventBus.on('line-ring', (e) => {
     let geojsonstr = qvMap.exportGeoJsonString(e.layerName);
     let geoJsonLineCyc = GeoJsonLineCyc(JSON.parse(geojsonstr));
