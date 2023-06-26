@@ -6,7 +6,7 @@ import GeoJSON from 'ol/format/GeoJSON.js';
 import { ProdLayersTypeEnum } from './ConstValue';
 import { GetTianDiTuLayers } from './Tdt';
 import { Layer, Tile } from 'ol/layer';
-import { Feature, MapBrowserEvent } from 'ol';
+import { Feature, Graticule, MapBrowserEvent } from 'ol';
 import { reactive } from 'vue';
 import { Modify, Select, Snap } from 'ol/interaction';
 import { getCenter } from 'ol/extent';
@@ -132,6 +132,19 @@ export class QvMap {
   private curLineRingLayerIndex = QvMap.lineRingBaseIndex;
   private curLineSelfOverLayerIndex = QvMap.lineSelfOverBaseIndex;
   private curPointRepeatLayerIndex = QvMap.pointRepeatBaseIndex;
+
+  private graticule = new Graticule({
+    opacity: 1,
+    visible: true,
+    zIndex: 9999999,
+    targetSize: 100,
+    showLabels: true,
+    strokeStyle: new Stroke({
+      color: 'rgba(255,0,0,1)',
+      width: 2,
+      lineDash: [4]
+    })
+  });
   // @ts-ignore
   private mapData = reactive({
     coordinates: null,
@@ -785,6 +798,13 @@ export class QvMap {
     if (this.converLayer) {
       this.map.removeLayer(this.converLayer);
     }
+  }
+
+  addGraticule() {
+    this._map.addLayer(this.graticule);
+  }
+  removeGraticule() {
+    this._map.removeLayer(this.graticule);
   }
 }
 

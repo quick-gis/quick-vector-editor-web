@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref } from 'vue';
 import { QvMap } from '@/views/map/QvMap';
 import eventBus from '@/utils/eventBus';
-import { Style } from 'ol/style';
+import { Stroke, Style } from 'ol/style';
 import { Tile, Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource, XYZ } from 'ol/source';
 import GeoJSON from 'ol/format/GeoJSON';
@@ -17,6 +17,7 @@ import { ProdLayersTypeEnum } from '@/views/map/ConstValue';
 import { LineAnalysis } from '@/views/anasys/line/LineAnalysis';
 import { GeoJsonLineCyc } from '@/views/anasys/line/GeoJsonLineCyc';
 import { getCenter } from 'ol/extent';
+import { Graticule } from 'ol';
 
 let pointAna = new PointAnalysis();
 let lineAna = new LineAnalysis();
@@ -333,6 +334,13 @@ const ebs = () => {
     vectorLayer.setZIndex(99999);
     qvMap.map.addLayer(vectorLayer);
     console.log(JSON.stringify(d2));
+  });
+  eventBus.on('closeOrOpenGraticule', (e) => {
+    if (!e.flag) {
+      qvMap.addGraticule();
+    } else {
+      qvMap.removeGraticule();
+    }
   });
 };
 

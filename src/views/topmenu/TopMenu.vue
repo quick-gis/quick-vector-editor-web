@@ -41,6 +41,9 @@
           <span>工具</span>
         </template>
         <t-menu-item value="3-0" @click="openTianDiTuConfig('/move_xy')">移动到XY</t-menu-item>
+        <t-menu-item value="3-1" @click="closeOrOpenGraticule">
+          {{ closeOrOpenGraticuleFlag ? '关闭' : '开启' }}网格模式</t-menu-item
+        >
       </t-submenu>
       <t-submenu value="4">
         <template #title>
@@ -97,6 +100,20 @@ import eventBus, { sendDialogCancel, sendDialogConfirm } from '@/utils/eventBus'
 import DynamicDialog from '@/views/common/DynamicDialog.vue';
 
 const cnm = () => {};
+const closeOrOpenGraticuleFlag = ref(false);
+
+const closeOrOpenGraticule = () => {
+  closeOrOpenGraticuleFlag.value = !closeOrOpenGraticuleFlag.value;
+  if (closeOrOpenGraticuleFlag.value) {
+    eventBus.emit('closeOrOpenGraticule', {
+      flag: false
+    });
+  } else {
+    eventBus.emit('closeOrOpenGraticule', {
+      flag: true
+    });
+  }
+};
 const visible = reactive({
   dialog: false,
   dialog_width: '75%'
