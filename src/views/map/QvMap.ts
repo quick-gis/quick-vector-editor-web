@@ -5,7 +5,7 @@ import { Vector as VectorLayer } from 'ol/layer.js';
 import GeoJSON from 'ol/format/GeoJSON.js';
 import { ProdLayersTypeEnum } from './ConstValue';
 import { GetTianDiTuLayers } from './Tdt';
-import { Layer } from 'ol/layer';
+import { Layer, Tile } from 'ol/layer';
 import { Feature, MapBrowserEvent } from 'ol';
 import { reactive } from 'vue';
 import { Modify, Select, Snap } from 'ol/interaction';
@@ -19,6 +19,7 @@ import { LinearRing, Point } from 'ol/geom';
 import { Circle, Fill, Stroke, Style, Text } from 'ol/style';
 import CircleStyle from 'ol/style/Circle';
 import { fromExtent } from 'ol/geom/Polygon';
+import { XYZ } from 'ol/source';
 
 function getSelectPlus(mapData: any) {
   const clickInteraction = new Select({
@@ -205,7 +206,41 @@ export class QvMap {
     if (layer1) {
       layer1.setVisible(check);
     } else {
-      let tileLayer = GetTianDiTuLayers(layer);
+      let tileLayer;
+      if (
+        layer == ProdLayersTypeEnum.vec_c_jwd ||
+        layer == ProdLayersTypeEnum.vec_jwd_label ||
+        layer == ProdLayersTypeEnum.vec_c_mkt ||
+        layer == ProdLayersTypeEnum.vec_mkt_label ||
+        layer == ProdLayersTypeEnum.img_c_jwd ||
+        layer == ProdLayersTypeEnum.img_jwd_label ||
+        layer == ProdLayersTypeEnum.img_c_mkt ||
+        layer == ProdLayersTypeEnum.img_mkt_label
+      ) {
+        tileLayer = GetTianDiTuLayers(layer);
+      } else if (layer == ProdLayersTypeEnum.gd_jd) {
+        tileLayer = new Tile({
+          source: new XYZ({
+            //style的数字区间为6-8；6代表卫星图，7代表街道（标注），8代表路网
+            url: 'http://webst0{1-4}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={x}&y={y}&z={z}'
+          })
+        });
+      } else if (layer == ProdLayersTypeEnum.gd_lw) {
+        tileLayer = new Tile({
+          source: new XYZ({
+            //style的数字区间为6-8；6代表卫星图，7代表街道（标注），8代表路网
+            url: 'http://webst0{1-4}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}'
+          })
+        });
+      } else if (layer == ProdLayersTypeEnum.gd_wx) {
+        tileLayer = new Tile({
+          source: new XYZ({
+            //style的数字区间为6-8；6代表卫星图，7代表街道（标注），8代表路网
+            url: 'http://webst0{1-4}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=6&x={x}&y={y}&z={z}'
+          })
+        });
+      }
+
       if (tileLayer) {
         this._map.addLayer(tileLayer);
         this.diTu.set(layer, tileLayer);

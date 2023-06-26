@@ -11,6 +11,10 @@ export enum ProdLayersTypeEnum {
   img_c_mkt = '影像底图-墨卡托',
   img_mkt_label = '影像底图-标注-墨卡托',
 
+  gd_wx = '卫星图',
+  gd_jd = '街道',
+  gd_lw = '路网',
+
   file = '文件图层',
   sql = '数据库图层',
   buffer = '缓冲图层',

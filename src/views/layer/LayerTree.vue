@@ -114,7 +114,10 @@ const rightClick = (e, node) => {
     node.data.tag == ProdLayersTypeEnum.img_c_jwd ||
     node.data.tag == ProdLayersTypeEnum.img_jwd_label ||
     node.data.tag == ProdLayersTypeEnum.img_c_mkt ||
-    node.data.tag == ProdLayersTypeEnum.img_mkt_label
+    node.data.tag == ProdLayersTypeEnum.img_mkt_label ||
+    node.data.tag == ProdLayersTypeEnum.gd_wx ||
+    node.data.tag == ProdLayersTypeEnum.gd_lw ||
+    node.data.tag == ProdLayersTypeEnum.gd_jd
   ) {
     contextmenuConfig.display = false;
   }
@@ -259,6 +262,29 @@ const data = reactive({
                   tag: ProdLayersTypeEnum.img_jwd_label
                 }
               ]
+            }
+          ]
+        },
+        {
+          value: '1-2',
+          label: '高德地图',
+          tag: '',
+          disabled: true,
+          children: [
+            {
+              value: '1-2-1',
+              label: '卫星图',
+              tag: ProdLayersTypeEnum.gd_wx
+            },
+            {
+              value: '1-2-2',
+              label: '街道图',
+              tag: ProdLayersTypeEnum.gd_jd
+            },
+            {
+              value: '1-2-3',
+              label: '路网',
+              tag: ProdLayersTypeEnum.gd_lw
             }
           ]
         }
@@ -454,7 +480,10 @@ const onChange = (checked, context) => {
         findNodeByValue1.tag == ProdLayersTypeEnum.img_c_jwd ||
         findNodeByValue1.tag == ProdLayersTypeEnum.img_jwd_label ||
         findNodeByValue1.tag == ProdLayersTypeEnum.img_c_mkt ||
-        findNodeByValue1.tag == ProdLayersTypeEnum.img_mkt_label
+        findNodeByValue1.tag == ProdLayersTypeEnum.img_mkt_label ||
+        findNodeByValue1.tag == ProdLayersTypeEnum.gd_wx ||
+        findNodeByValue1.tag == ProdLayersTypeEnum.gd_lw ||
+        findNodeByValue1.tag == ProdLayersTypeEnum.gd_jd
       ) {
         closeDiTuLayer(findNodeByValue1.tag);
       } else {
@@ -475,7 +504,10 @@ const onChange = (checked, context) => {
         findNodeByValue1.tag == ProdLayersTypeEnum.img_c_jwd ||
         findNodeByValue1.tag == ProdLayersTypeEnum.img_jwd_label ||
         findNodeByValue1.tag == ProdLayersTypeEnum.img_c_mkt ||
-        findNodeByValue1.tag == ProdLayersTypeEnum.img_mkt_label
+        findNodeByValue1.tag == ProdLayersTypeEnum.img_mkt_label ||
+        findNodeByValue1.tag == ProdLayersTypeEnum.gd_wx ||
+        findNodeByValue1.tag == ProdLayersTypeEnum.gd_lw ||
+        findNodeByValue1.tag == ProdLayersTypeEnum.gd_jd
       ) {
         openDiTuLayer(findNodeByValue1.tag);
       } else {
