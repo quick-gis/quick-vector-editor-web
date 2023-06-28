@@ -41,13 +41,13 @@ function startEndToSt(d: any) {
     let target = xyToName.get(JSON.stringify(it.end));
     data.push({
       source: source,
-      target: target,
+      target: target
     });
   }
   return {
     data: data,
     nameToXy: nameToXy,
-    xyToName: xyToName,
+    xyToName: xyToName
   };
 }
 
@@ -148,12 +148,12 @@ function connectPoints(points: any, nameToXy: any): [] {
       const connection: any = {
         start: {
           x: st.x,
-          y: st.y,
+          y: st.y
         },
         end: {
           x: et.x,
-          y: et.y,
-        },
+          y: et.y
+        }
       };
       connections.push(connection);
     }
@@ -161,12 +161,12 @@ function connectPoints(points: any, nameToXy: any): [] {
     connections.push({
       start: {
         x: JSON.parse(nameToXy.get(points[points.length - 1])).x,
-        y: JSON.parse(nameToXy.get(points[points.length - 1])).y,
+        y: JSON.parse(nameToXy.get(points[points.length - 1])).y
       },
       end: {
         x: JSON.parse(nameToXy.get(points[0])).x,
-        y: JSON.parse(nameToXy.get(points[0])).y,
-      },
+        y: JSON.parse(nameToXy.get(points[0])).y
+      }
     });
     return connections;
   }

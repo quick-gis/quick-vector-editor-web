@@ -16,9 +16,9 @@ function calcRing(d: any) {
           type: 'LineString',
           coordinates: [
             [ct.start.x, ct.start.y],
-            [ct.end.x, ct.end.y],
-          ],
-        },
+            [ct.end.x, ct.end.y]
+          ]
+        }
       });
     }
   }
@@ -35,7 +35,7 @@ export function GeoJsonLineWithOnceCyc(d: any) {
 
   return {
     type: 'FeatureCollection',
-    features: e,
+    features: e
   };
 }
 
@@ -46,7 +46,7 @@ export function GeoJsonLineCollectionCyc(d: any) {
   }
   return {
     type: 'FeatureCollection',
-    features: res,
+    features: res
   };
 }
 

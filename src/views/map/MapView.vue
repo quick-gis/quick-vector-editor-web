@@ -18,6 +18,7 @@ import { LineAnalysis } from '@/views/anasys/line/LineAnalysis';
 import { GeoJsonLineCyc } from '@/views/anasys/line/GeoJsonLineCyc';
 import { getCenter } from 'ol/extent';
 import { Graticule } from 'ol';
+import { KML } from 'ol/format';
 
 let pointAna = new PointAnalysis();
 let lineAna = new LineAnalysis();
@@ -43,6 +44,14 @@ function exportGeojson(e) {
   let str = qvMap.GetGeojsonWithLayer(e.uid);
   let strData = new Blob([str], { type: 'text/plain;charset=utf-8' });
   saveAs(strData, 'export.json');
+}
+
+var kml = new KML();
+function exportKML(e) {
+  let vectorSource = qvMap.getLayersByUid(e.uid);
+  let str = kml.writeFeatures(vectorSource.getFeatures());
+  let strData = new Blob([str], { type: 'text/plain;charset=utf-8' });
+  saveAs(strData, 'export.xml');
 }
 
 function exportShp(e) {
@@ -106,6 +115,9 @@ const ebs = () => {
   });
   eventBus.on('export-geojson', (e) => {
     exportGeojson(e);
+  });
+  eventBus.on('export-kml', (e) => {
+    exportKML(e);
   });
   eventBus.on('export-shp', (e) => {
     exportShp(e);

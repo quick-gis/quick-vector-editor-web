@@ -53,6 +53,7 @@
         >
           <t-menu-item value="3-1-1" @click="exportShp">导出 Shp</t-menu-item>
           <t-menu-item value="3-1-2" @click="exportGeojson">导出 GeoJson</t-menu-item>
+          <t-menu-item value="3-1-2" @click="exportKml">导出 KML</t-menu-item>
         </t-submenu>
         <t-menu-item title="样式" value="4-1" @click="changeLabel">样式</t-menu-item>
         <t-menu-item title="居中" value="5-1" @click="moveToCenter">居中</t-menu-item>
@@ -126,6 +127,9 @@ const rightClick = (e, node) => {
 const tree = ref();
 const exportGeojson = () => {
   eventBus.emit('export-geojson', { uid: curNode.value.uid });
+};
+const exportKml = () => {
+  eventBus.emit('export-kml', { uid: curNode.value.uid });
 };
 
 const changeLabel = () => {

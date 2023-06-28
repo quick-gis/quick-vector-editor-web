@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue';
 import eventBus from '@/utils/eventBus';
+import GeoJSON from 'ol/format/GeoJSON';
+import { GML, KML, TopoJSON } from 'ol/format';
+import XML from 'ol/format/XML';
+import { Vector } from 'ol/source';
 
 const feature = reactive({
   properties: {},
@@ -61,9 +65,45 @@ const cols = ref([
   },
   { colKey: 'y', title: 'y', width: 30, foot: '-' }
 ]);
+const o = () => {
+  let d = {
+    type: 'FeatureCollection',
+    features: [
+      {
+        type: 'Feature',
+        properties: {
+          a: 'a'
+        },
+        geometry: {
+          coordinates: [
+            [117.0, 30.0],
+            [117.0, 30.1],
+            [117.1, 30.1],
+            [117.0, 30.0]
+          ],
+          type: 'LineString'
+        }
+      }
+    ]
+  };
+
+  var geoJSON = new GeoJSON();
+
+  var defaultArray = geoJSON.readFeatures(d);
+
+  var vectorSource = new Vector({
+    features: defaultArray
+  });
+  console.log(defaultArray);
+  var kml = new KML();
+  console.log(kml.writeFeatures(vectorSource.getFeatures()));
+};
 </script>
 
 <template>
+  <div>
+    <t-button @click="o">a</t-button>
+  </div>
   <div>逻辑属性</div>
   <t-form :model="feature" label-position="right" label-width="100px" style="max-width: 460px">
     <t-form-item v-for="(col, index) in feature.properties" :label="index">

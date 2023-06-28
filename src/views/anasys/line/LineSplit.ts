@@ -30,12 +30,12 @@ function connectPoints(points: any): [] {
     const connection: any = {
       start: {
         x: startPoint[0],
-        y: startPoint[1],
+        y: startPoint[1]
       },
       end: {
         x: endPoint[0],
-        y: endPoint[1],
-      },
+        y: endPoint[1]
+      }
     };
     connections.push(connection);
   }
