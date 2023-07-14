@@ -197,9 +197,9 @@ export class QvMap {
       layers: [],
 
       view: new View({
-        center: [119.45436769887343, 29.2080525919085],
+        center: [120.92773668228097, 29.932492325018416],
 
-        zoom: 8,
+        zoom: 13,
         projection: 'EPSG:4326'
       })
     });

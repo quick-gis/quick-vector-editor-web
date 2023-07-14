@@ -54,6 +54,15 @@ export const SelectedStyles = {
       width: 3.5 // 边框粗细为3
     })
   }),
+  xuxian: new Style({
+    fill: new Fill({
+      color: randomColor() // 红色填充
+    }),
+    stroke: new Stroke({
+      width: 3.5, // 边框粗细为3
+      lineDash: [20, 10, 40, 20]
+    })
+  }),
   Polygon: new Style({
     fill: new Fill({
       color: randomColor() // 红色填充

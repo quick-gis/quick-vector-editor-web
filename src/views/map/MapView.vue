@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref } from 'vue';
 import { QvMap } from '@/views/map/QvMap';
 import eventBus from '@/utils/eventBus';
-import { Stroke, Style } from 'ol/style';
+import { Fill, Stroke, Style } from 'ol/style';
 import { Tile, Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource, XYZ } from 'ol/source';
 import GeoJSON from 'ol/format/GeoJSON';
@@ -16,9 +16,13 @@ import { v4 as uuidv4 } from 'uuid';
 import { ProdLayersTypeEnum } from '@/views/map/ConstValue';
 import { LineAnalysis } from '@/views/anasys/line/LineAnalysis';
 import { GeoJsonLineCyc } from '@/views/anasys/line/GeoJsonLineCyc';
-import { getCenter } from 'ol/extent';
-import { Graticule } from 'ol';
+import { getCenter, getHeight, getWidth } from 'ol/extent';
+import { Feature, Graticule } from 'ol';
 import { KML } from 'ol/format';
+import { Point } from 'ol/geom';
+import { buffer } from '@turf/turf';
+import { randomColor } from '@/utils/Utils';
+import { DEVICE_PIXEL_RATIO } from 'ol/has';
 
 let pointAna = new PointAnalysis();
 let lineAna = new LineAnalysis();
@@ -361,6 +365,135 @@ onMounted(() => {
   map.value = qvMap.initMap();
 
   ebs();
+
+  let d = {
+    type: 'FeatureCollection',
+    features: [
+      {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          coordinates: [
+            [
+              [120.90679143868482, 29.918143646632046],
+              [120.90679143868482, 29.891314098531936],
+              [120.91740301263843, 29.891314098531936],
+              [120.9271302887638, 29.89208075731409],
+              [120.95984930845651, 29.908945758436133],
+              [120.95100633016051, 29.908945758436133],
+              [120.94570054318376, 29.91737718839724],
+              [120.90679143868482, 29.918143646632046]
+            ]
+          ],
+          type: 'Polygon'
+        },
+        id: 0
+      }
+    ]
+  };
+
+  let vectorLayer = new VectorLayer({
+    source: new VectorSource({
+      features: new GeoJSON().readFeatures(d)
+    }),
+    style: function (f) {
+      // @ts-ignore
+      return SelectedStyles[f.getGeometry().getType()];
+    },
+    zIndex: 10
+  });
+
+  qvMap.map.addLayer(vectorLayer);
+
+  const pixelRatio = DEVICE_PIXEL_RATIO;
+
+  let geojson2 = buffer(d, 10, { units: 'kilometers' });
+
+  let vectorLayer2 = new VectorLayer({
+    source: new VectorSource({
+      features: new GeoJSON().readFeatures({
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              coordinates: [
+                [
+                  [120.92773668228097, 29.932492325018416],
+                  [120.92773668228097, 29.92113586071764],
+                  [120.9607435025473, 29.92113586071764],
+                  [120.9607435025473, 29.932492325018416],
+                  [120.92773668228097, 29.932492325018416]
+                ]
+              ],
+              type: 'Polygon'
+            }
+          }
+        ]
+      })
+    }),
+    style: function (feature) {
+      var extent = feature.getGeometry().getExtent();
+      var center = getCenter(extent);
+      var radius = Math.max(getWidth(extent), getHeight(extent)) * 0.5;
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      console.log('aaaaaa');
+      var g = context.createRadialGradient(center[0], center[1], 0, center[0], center[1], radius);
+
+      g.addColorStop(0, 'red');
+      g.addColorStop(0.2, 'orange');
+      g.addColorStop(0.4, 'tomato');
+      g.addColorStop(0.6, 'purple');
+      g.addColorStop(0.8, 'lavender');
+      g.addColorStop(1, 'rgb(204 ,26,248)');
+      return new Style({
+        fill: new Fill({
+          color: g
+        })
+      });
+    },
+    zIndex: 9
+  });
+  qvMap.map.addLayer(vectorLayer2);
+  // let geojson3 = buffer(d, 30, { units: 'kilometers' });
+  //
+  // let vectorLayer3 = new VectorLayer({
+  //   source: new VectorSource({
+  //     features: new GeoJSON().readFeatures(geojson3)
+  //   }),
+  //   style: new Style({
+  //     fill: new Fill({
+  //       color: '#2a76c5' // 红色填充
+  //     }),
+  //     stroke: new Stroke({
+  //       color: randomColor(), // 黑色边框
+  //       width: 3.5 // 边框粗细为3
+  //     })
+  //   }),
+  //   zIndex: 8
+  // });
+  // qvMap.map.addLayer(vectorLayer3);
+  //
+  // let geojson4 = buffer(d, 40, { units: 'kilometers' });
+  // let vectorLayer4 = new VectorLayer({
+  //   source: new VectorSource({
+  //     features: new GeoJSON().readFeatures(geojson4)
+  //   }),
+  //   style: new Style({
+  //     fill: new Fill({
+  //       color: '#578bc0' // 红色填充
+  //     }),
+  //     stroke: new Stroke({
+  //       width: 3.5, // 边框粗细为3
+  //       lineDash: [20, 10, 40, 20]
+  //     })
+  //   }),
+  //   zIndex: 7
+  // });
+  // qvMap.map.addLayer(vectorLayer4);
+
   // qvMap.showOrDisplay(ProdLayersTypeEnum.vec_c_jwd, true)
   // qvMap.showOrDisplay(ProdLayersTypeEnum.vec_jwd_label, true)
 });
